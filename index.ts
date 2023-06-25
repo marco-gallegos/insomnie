@@ -3,30 +3,30 @@ const blessed = require('blessed');
 
 // Crear la pantalla
 const screen = blessed.screen({
-  smartCSR: true,
+    smartCSR: true,
 });
 
 // Crear el cuadro con scroll
 const scrollBox = blessed.box({
-  parent: screen,
-  top: 'center',
-  left: 'center',
-  width: '50%',
-  height: '50%',
-  border: {
-    type: 'line',
-  },
-  scrollable: true,  // Habilitar scroll
-    keys:true,
-    vi: true,
-  scrollbar: {
-    bg: 'white',
-    fg: 'black',
-  },
+    parent: screen,
+    top: 'center',
+    left: 'center',
+    width: '50%',
+    height: '50%',
+    border: {
+        type: 'line',
+    },
+    scrollable: true,  // Habilitar scroll
+        keys:true,
+        vi: true,
+    scrollbar: {
+        bg: 'white',
+        fg: 'black',
+    },
 });
 
 // Contenido de ejemplo (lorem ipsum)
-const loremText = `Lorem ipsum dolor sit amet,
+const loremText:string = `Lorem ipsum dolor sit amet,
 consectetur adipiscing elit.
 Nulla sed interdum nisi. Sed pharetra libero id nunc tristique, nec scelerisque dui sagittis.
 Nunc eu hendrerit lacus. Pellentesque ut tristique risus. Proin euismod lacus ligula, eu ullamcorper justo luctus a.
@@ -51,7 +51,7 @@ scrollBox.focus()
 
 // Hacer que la pantalla sea redimensionable
 screen.key(['escape', 'q', 'C-c'], () => {
-  return process.exit(0);
+    return process.exit(0);
 });
 
 // Renderizar la pantalla

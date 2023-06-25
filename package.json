@@ -5,7 +5,8 @@
     "main": "index.ts",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "esbuild index.ts --bundle --platform=node --minify --packages=external --outfile=insomnie.js"
+        "build": "esbuild index.ts --bundle --platform=node --minify --packages=external --outfile=insomnie.js",
+        "watch": "nodemon --exec 'npm run build' -e ts"
     },
     "bin": {
         "insomnie": "./insomnie.js"
@@ -18,6 +19,7 @@
     },
     "devDependencies": {
         "@types/blessed": "^0.1.22",
-        "esbuild": "^0.18.8"
+        "esbuild": "^0.18.8",
+        "nodemon": "^2.0.22"
     }
 }
