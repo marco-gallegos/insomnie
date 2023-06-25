@@ -1,0 +1,23 @@
+{
+    "name": "insomnie",
+    "version": "1.0.2",
+    "description": "insomnie is a rest client for the terminal (TUI) ",
+    "main": "index.ts",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "esbuild index.ts --bundle --platform=node --minify --packages=external --outfile=insomnie.js"
+    },
+    "bin": {
+        "insomnie": "./insomnie.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "blessed": "^0.1.81"
+    },
+    "devDependencies": {
+        "@types/blessed": "^0.1.22",
+        "esbuild": "^0.18.8"
+    }
+}
