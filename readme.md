@@ -2,6 +2,16 @@
 
 Insomnie is the french translation of insomnio from the spanish and is a kind of joke about the rest translation to the spanish (descansar).
 
+## Project Focuses
+
+ KISS - Keep it simple, stupid.
+
+
+This project should be easy to read and to use i prefer something simple and lightweight rather than something complex and heavy even if this makes a bit less friendly the UX, im assuming this is used by professionals.
+
+
+if this is easy to read and use then is easy to fork and extend.
+
 
 ## what i want to do
 
@@ -54,4 +64,22 @@ the tui works without the cli with local config saving.
 - tui can save and load requests
 - tui works per project
 - the code is easy to extend
+
+
+
+## Road Map
+
+- [ ] cli boot
+    - [ ] cli can boots the tui
+    - [ ] works on linux
+    - [ ] npm project
+    - [ ] npm project works using npm i -g
+- [ ] configuration basics
+    - [ ] is possible store using sqlite
+    - [ ] is possible store env variables (api url)
+    - [ ] os possible recover env variables 
+    - [ ] define all supported headers for api
+- [ ] tui 1st step
+    - [ ]  
+
 
