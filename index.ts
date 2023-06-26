@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-const blessed = require('blessed');
+import blessed from "blessed"
+import {} from "@types/"
 
 // Crear la pantalla
 const screen = blessed.screen({
@@ -23,7 +24,29 @@ const scrollBox = blessed.box({
         bg: 'white',
         fg: 'black',
     },
-});
+})
+
+
+const dropdown = blessed.list({
+    parent: screen,
+    top: 'top',
+    left: 'center',
+    width: '50%',
+    height: '5%',
+    style: {
+        bg: 'green'
+    },
+    vi:true,
+    keys: true,
+    mouse: true,
+    items: [
+        "red",
+        "black",
+        "blue",
+        "bed",
+        "white",
+    ]
+})
 
 // Contenido de ejemplo (lorem ipsum)
 const loremText:string = `Lorem ipsum dolor sit amet,
@@ -47,7 +70,15 @@ Etiam eu rutrum nunc, a eleifend ante. Fusce pharetra purus nec ex placerat phar
 // Agregar el contenido al cuadro con scroll
 scrollBox.setContent(loremText);
 
-scrollBox.focus()
+//scrollBox.focus()
+dropdown.focus()
+
+
+//
+dropdown.on('select', (element, keySelected) => {
+    console.debug(ch)
+})
+
 
 // Hacer que la pantalla sea redimensionable
 screen.key(['escape', 'q', 'C-c'], () => {
