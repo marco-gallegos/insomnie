@@ -15,6 +15,7 @@
     "author": "",
     "license": "MIT",
     "dependencies": {
+        "axios": "^1.4.0",
         "blessed": "^0.1.81"
     },
     "devDependencies": {
