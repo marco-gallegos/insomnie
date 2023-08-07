@@ -1,2 +1,240 @@
 #!/usr/bin/env node
-var g=Object.create;var c=Object.defineProperty;var b=Object.getOwnPropertyDescriptor;var h=Object.getOwnPropertyNames;var f=Object.getPrototypeOf,y=Object.prototype.hasOwnProperty;var m=(t,r,s,a)=>{if(r&&typeof r=="object"||typeof r=="function")for(let o of h(r))!y.call(t,o)&&o!==s&&c(t,o,{get:()=>r[o],enumerable:!(a=b(r,o))||a.enumerable});return t};var u=(t,r,s)=>(s=t!=null?g(f(t)):{},m(r||!t||!t.__esModule?c(s,"default",{value:t,enumerable:!0}):s,t));var e=u(require("blessed")),p=u(require("axios")),i=e.default.screen({smartCSR:!0}),n=e.default.form({parent:i,width:"50%",height:"100%",border:{type:"line"},style:{fg:"white",bg:"black"}}),C=e.default.text({parent:n,top:1,left:2,content:"M\xE9todo:"}),l=e.default.list({parent:n,top:2,left:2,width:"96%",height:3,keys:!0,mouse:!0,autoCommandKeys:!0,border:{type:"line"},style:{item:{fg:"white",bg:"black",hover:{bg:"green"}},selected:{bg:"green"}},items:["GET","POST","PUT","DELETE"]}),S=e.default.text({parent:n,top:6,left:2,content:"URL:"}),w=e.default.textbox({parent:n,top:7,left:2,width:"96%",height:3,vi:!0,keys:!0,mouse:!0,border:{type:"line"},style:{fg:"white",bg:"black",focus:{border:{fg:"green"}}}}),T=e.default.text({parent:n,top:10,left:2,content:"Headers:"}),k=e.default.textarea({parent:n,top:11,left:2,width:"96%",height:8,vi:!0,keys:!0,mouse:!0,border:{type:"line"},style:{fg:"white",bg:"black",focus:{border:{fg:"green"}}}}),O=e.default.text({parent:n,top:21,left:2,content:"Body:"}),x=e.default.textarea({parent:n,top:22,left:2,width:"96%",height:10,vi:!0,keys:!0,mouse:!0,border:{type:"line"},style:{fg:"white",bg:"black",focus:{border:{fg:"green"}}}}),v=e.default.button({parent:n,top:34,left:"center",width:10,height:3,content:"Enviar",border:{type:"line"},vi:!0,keys:!0,mouse:!0,style:{fg:"white",bg:"black",focus:{border:{fg:"green"}}}}),d=e.default.box({parent:i,left:"50%+1",width:"50%-1",height:"100%",border:{type:"line"},style:{fg:"white",bg:"black"}}),E=async()=>{let t=l.options?.items?l.options.items[l.selected]:"GET",r=w.getValue(),s=k.getValue(),a=x.getValue();try{let o=await(0,p.default)({method:t,url:r,headers:s?JSON.parse(s):null,data:a?JSON.parse(a):null});d.setContent(JSON.stringify(o.data,null,2))}catch(o){d.setContent(`Error: ${o.message}`)}i.render()};v.on("press",E);i.key(["escape","q","C-c"],()=>process.exit(0));i.render();
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __commonJS = (cb, mod) => function __require() {
+  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
+
+// ui/index.ts
+var require_ui = __commonJS({
+  "ui/index.ts"(exports, module2) {
+    var import_blessed = __toESM(require("blessed"));
+    var screen2 = import_blessed.default.screen({
+      smartCSR: true
+    });
+    var form = import_blessed.default.form({
+      parent: screen2,
+      //top: 'center',
+      //left: 'center',
+      width: "50%",
+      height: "100%",
+      //border: {
+      //type: 'line',
+      //},
+      scrollable: true,
+      // Habilitar scroll
+      keys: true,
+      vi: true,
+      mouse: true,
+      scrollbar: {
+        style: {
+          fg: "white",
+          bg: "blue"
+        }
+      }
+    });
+    var methodLabel = import_blessed.default.text({
+      parent: form,
+      top: 1,
+      left: 2,
+      content: "M\xE9todo:"
+    });
+    var methodList = import_blessed.default.list({
+      parent: form,
+      top: 2,
+      left: 2,
+      width: "96%",
+      height: 3,
+      keys: true,
+      mouse: true,
+      autoCommandKeys: true,
+      border: {
+        type: "line"
+      },
+      style: {
+        item: {
+          fg: "white",
+          bg: "black",
+          hover: {
+            bg: "green"
+          }
+        },
+        selected: {
+          bg: "green"
+        }
+      },
+      items: [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ]
+    });
+    var urlLabel = import_blessed.default.text({
+      parent: form,
+      top: 6,
+      left: 2,
+      content: "URL:"
+    });
+    var urlInput = import_blessed.default.textbox({
+      parent: form,
+      top: 7,
+      left: 2,
+      width: "96%",
+      height: 3,
+      vi: true,
+      keys: true,
+      mouse: true,
+      border: {
+        type: "line"
+      },
+      style: {
+        fg: "white",
+        bg: "black",
+        focus: {
+          border: {
+            fg: "green"
+          }
+        }
+      }
+    });
+    var headersLabel = import_blessed.default.text({
+      parent: form,
+      top: 10,
+      left: 2,
+      content: "Headers:"
+    });
+    var headersInput = import_blessed.default.textarea({
+      parent: form,
+      top: 11,
+      left: 2,
+      width: "96%",
+      height: 8,
+      vi: true,
+      keys: true,
+      mouse: true,
+      border: {
+        type: "line"
+      },
+      style: {
+        fg: "white",
+        bg: "black",
+        focus: {
+          border: {
+            fg: "green"
+          }
+        }
+      }
+    });
+    var bodyLabel = import_blessed.default.text({
+      parent: form,
+      top: 21,
+      left: 2,
+      content: "Body:"
+    });
+    var bodyInput = import_blessed.default.textarea({
+      parent: form,
+      top: 22,
+      left: 2,
+      width: "96%",
+      height: 10,
+      vi: true,
+      keys: true,
+      mouse: true,
+      border: {
+        type: "line"
+      },
+      style: {
+        fg: "white",
+        bg: "black",
+        focus: {
+          border: {
+            fg: "green"
+          }
+        }
+      }
+    });
+    var sendButton2 = import_blessed.default.button({
+      parent: form,
+      top: 34,
+      left: "center",
+      width: 10,
+      height: 3,
+      content: "Enviar",
+      border: {
+        type: "line"
+      },
+      vi: true,
+      keys: true,
+      mouse: true,
+      style: {
+        fg: "white",
+        bg: "black",
+        focus: {
+          border: {
+            fg: "green"
+          }
+        }
+      }
+    });
+    var preview = import_blessed.default.box({
+      parent: screen2,
+      left: "50%-1",
+      width: "50%",
+      height: "100%",
+      border: {
+        type: "line"
+      },
+      style: {
+        fg: "white",
+        bg: "black"
+      },
+      scrollable: true,
+      // Habilitar scroll
+      keys: true,
+      vi: true,
+      mouse: true,
+      scrollbar: {
+        style: {
+          bg: "green",
+          fg: "green"
+        }
+      }
+    });
+    module2.exports = {
+      screen: screen2,
+      preview,
+      sendButton: sendButton2,
+      bodyLabel,
+      bodyInput
+    };
+  }
+});
+
+// index.ts
+var import_ui = __toESM(require_ui());
+var makeRequest = async () => {
+};
+import_ui.sendButton.on("press", makeRequest);
+import_ui.screen.key(["escape", "q", "C-c"], () => process.exit(0));
+import_ui.screen.render();
