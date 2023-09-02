@@ -47,7 +47,7 @@ Etiam eu rutrum nunc, a eleifend ante. Fusce pharetra purus nec ex placerat phar
 
 
 // Crear la pantalla
-const screen = blessed.screen({
+export const screen = blessed.screen({
     smartCSR: true,
 });
 
@@ -202,7 +202,7 @@ const bodyInput = blessed.textarea({
     },
 });
 
-const sendButton = blessed.button({
+export const sendButton = blessed.button({
     parent: form,
     top: 34,
     left: 'center',
@@ -228,7 +228,7 @@ const sendButton = blessed.button({
 
 
 // Crear la columna derecha (vista previa)
-const preview = blessed.box({
+export const preview = blessed.box({
     parent: screen,
     left: '50%-1',
     width: '50%',
@@ -255,10 +255,10 @@ const preview = blessed.box({
 
 //preview.setContent(loremText);
 
-module.exports = {
-    screen,
-    preview,
-    sendButton: sendButton,
-    bodyLabel,
-    bodyInput,
-}
+//module.exports = {
+    //screen,
+    //preview,
+    //sendButton: sendButton,
+    //bodyLabel,
+    //bodyInput,
+//}
