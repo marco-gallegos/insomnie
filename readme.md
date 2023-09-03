@@ -69,11 +69,11 @@ the tui works without the cli with local config saving.
 
 ## Road Map
 
-- [ ] cli boot
-    - [ ] cli can boots the tui
-    - [ ] works on linux
-    - [ ] npm project
-    - [ ] npm project works using npm i -g
+- [x] cli boot
+    - [x] cli can boots the tui
+    - [x] works on linux
+    - [x] npm project
+    - [x] npm project works using npm i -g
 - [ ] configuration basics
     - [ ] is possible store using sqlite
     - [ ] is possible store env variables (api url)

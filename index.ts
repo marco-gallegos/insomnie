@@ -4,7 +4,7 @@ import { screen, sendButton, preview } from "./ui"
 
 // Función para realizar la petición y mostrar los resultados
 const makeRequest = async () => {
-    preview.setContent(`hola marco 7u7 ${Date.now()}`)
+    preview.setContent(`hola marco ${Date.now()}`)
     screen.render()
     //const method:string = !!methodList.options?.items ? methodList.options.items[methodList.selected]:'GET'
     //const url:string = urlInput.getValue();

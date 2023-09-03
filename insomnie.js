@@ -219,7 +219,7 @@ var preview = import_blessed.default.box({
 
 // index.ts
 var makeRequest = async () => {
-  preview.setContent(`hola marco 7u7 ${Date.now()}`);
+  preview.setContent(`hola marco ${Date.now()}`);
   screen.render();
 };
 sendButton.on("press", makeRequest);
