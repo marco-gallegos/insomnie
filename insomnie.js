@@ -22,206 +22,55 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// ui/index.ts
-var import_blessed = __toESM(require("blessed"));
-var screen = import_blessed.default.screen({
-  smartCSR: true
-});
-var form = import_blessed.default.form({
-  parent: screen,
-  //top: 'center',
-  //left: 'center',
-  width: "50%",
-  height: "100%",
-  //border: {
-  //type: 'line',
-  //},
-  scrollable: true,
-  // Habilitar scroll
-  keys: true,
-  vi: true,
-  mouse: true,
-  scrollbar: {
-    style: {
-      fg: "white",
-      bg: "blue"
-    }
-  }
-});
-var methodLabel = import_blessed.default.text({
-  parent: form,
-  top: 1,
-  left: 2,
-  content: "M\xE9todo:"
-});
-var methodList = import_blessed.default.list({
-  parent: form,
-  top: 2,
-  left: 2,
-  width: "96%",
-  height: 3,
-  keys: true,
-  mouse: true,
-  autoCommandKeys: true,
-  border: {
-    type: "line"
-  },
-  style: {
-    item: {
-      fg: "white",
-      bg: "black",
-      hover: {
-        bg: "green"
+// repository/index.ts
+var import_fs = __toESM(require("fs"));
+var sqlite3 = require("sqlite3").verbose();
+var filepath = "./requests.db";
+var createTable = async (db2) => {
+  db2.exec(`
+        CREATE TABLE requests
+        (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            url   VARCHAR(250) NOT NULL,
+            path   VARCHAR(250) NOT NULL,
+            headers   VARCHAR(250),
+            weight INTEGER NOT NULL
+        );
+    `);
+};
+var migrate = (db2) => {
+  createTable(db2);
+};
+function createDbConnection() {
+  if (import_fs.default.existsSync(filepath)) {
+    return new sqlite3.Database(filepath);
+  } else {
+    const db2 = new sqlite3.Database(filepath, (error) => {
+      if (error) {
+        return console.error(error.message);
       }
-    },
-    selected: {
-      bg: "green"
-    }
-  },
-  items: [
-    "GET",
-    "POST",
-    "PUT",
-    "DELETE"
-  ]
-});
-var urlLabel = import_blessed.default.text({
-  parent: form,
-  top: 6,
-  left: 2,
-  content: "URL:"
-});
-var urlInput = import_blessed.default.textbox({
-  parent: form,
-  top: 7,
-  left: 2,
-  width: "96%",
-  height: 3,
-  vi: true,
-  keys: true,
-  mouse: true,
-  border: {
-    type: "line"
-  },
-  style: {
-    fg: "white",
-    bg: "black",
-    focus: {
-      border: {
-        fg: "green"
-      }
-    }
+    });
+    console.log("Connection with SQLite has been established");
+    migrate(db2);
+    return db2;
   }
-});
-var headersLabel = import_blessed.default.text({
-  parent: form,
-  top: 10,
-  left: 2,
-  content: "Headers:"
-});
-var headersInput = import_blessed.default.textarea({
-  parent: form,
-  top: 11,
-  left: 2,
-  width: "96%",
-  height: 8,
-  vi: true,
-  keys: true,
-  mouse: true,
-  border: {
-    type: "line"
-  },
-  style: {
-    fg: "white",
-    bg: "black",
-    focus: {
-      border: {
-        fg: "green"
-      }
+}
+var closeDb = (db2) => {
+  db2.close((err) => {
+    if (err) {
+      console.error("Error al cerrar la base de datos", err.message);
+    } else {
+      console.log("Base de datos cerrada");
     }
-  }
-});
-var bodyLabel = import_blessed.default.text({
-  parent: form,
-  top: 21,
-  left: 2,
-  content: "Body:"
-});
-var bodyInput = import_blessed.default.textarea({
-  parent: form,
-  top: 22,
-  left: 2,
-  width: "96%",
-  height: 10,
-  vi: true,
-  keys: true,
-  mouse: true,
-  border: {
-    type: "line"
-  },
-  style: {
-    fg: "white",
-    bg: "black",
-    focus: {
-      border: {
-        fg: "green"
-      }
-    }
-  }
-});
-var sendButton = import_blessed.default.button({
-  parent: form,
-  top: 34,
-  left: "center",
-  width: 10,
-  height: 3,
-  content: "Enviar",
-  border: {
-    type: "line"
-  },
-  vi: true,
-  keys: true,
-  mouse: true,
-  style: {
-    fg: "white",
-    bg: "black",
-    focus: {
-      border: {
-        fg: "green"
-      }
-    }
-  }
-});
-var preview = import_blessed.default.box({
-  parent: screen,
-  left: "50%-1",
-  width: "50%",
-  height: "100%",
-  border: {
-    type: "line"
-  },
-  style: {
-    fg: "white",
-    bg: "black"
-  },
-  scrollable: true,
-  // Habilitar scroll
-  keys: true,
-  vi: true,
-  mouse: true,
-  scrollbar: {
-    style: {
-      bg: "green",
-      fg: "green"
-    }
-  }
-});
+  });
+};
+var insert = (db2) => {
+  db2.run('INSERT INTO requests VALUES (null, "url", "Juan", "none", 1)');
+};
 
 // index.ts
-var makeRequest = async () => {
-  preview.setContent(`hola marco ${Date.now()}`);
-  screen.render();
-};
-sendButton.on("press", makeRequest);
-screen.key(["escape", "q", "C-c"], () => process.exit(0));
-screen.render();
+console.log("A =============================");
+var db = createDbConnection();
+insert(db);
+closeDb(db);
+console.log("B =============================");

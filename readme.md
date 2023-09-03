@@ -75,9 +75,9 @@ the tui works without the cli with local config saving.
     - [x] npm project
     - [x] npm project works using npm i -g
 - [ ] configuration basics
-    - [ ] is possible store using sqlite
+    - [x] is possible store using sqlite
     - [ ] is possible store env variables (api url)
-    - [ ] os possible recover env variables 
+    - [ ] is possible recover env variables 
     - [ ] define all supported headers for api
 - [ ] tui 1st step
     - [ ]  

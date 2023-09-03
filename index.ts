@@ -1,11 +1,19 @@
 #!/usr/bin/env node
-import { screen, sendButton, preview } from "./ui"
+//import { screen, sendButton, preview } from "./ui"
+import createDbConnection, { insert, closeDb } from "./repository"
+
+
+console.log("A =============================")
+const db = createDbConnection()
+insert(db)
+closeDb(db)
+console.log("B =============================")
 
 
 // Función para realizar la petición y mostrar los resultados
 const makeRequest = async () => {
-    preview.setContent(`hola marco ${Date.now()}`)
-    screen.render()
+    //preview.setContent(`hola marco ${Date.now()}`)
+    //screen.render()
     //const method:string = !!methodList.options?.items ? methodList.options.items[methodList.selected]:'GET'
     //const url:string = urlInput.getValue();
     //const headers = headersInput.getValue();
@@ -36,10 +44,10 @@ const makeRequest = async () => {
 
 
 // Asociar la función al evento "click" del botón
-sendButton.on('press', makeRequest);
+//sendButton.on('press', makeRequest);
 
 // Manejar eventos de teclado
-screen.key(['escape', 'q', 'C-c'], () => process.exit(0));
+//screen.key(['escape', 'q', 'C-c'], () => process.exit(0));
 
 // Mostrar la interfaz
-screen.render();
+//screen.render();
