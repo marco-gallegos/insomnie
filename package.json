@@ -20,15 +20,15 @@
         "tui",
         "cli",
         "http",
-        "client",
+        "client"
     ],
     "author": "Marco A. Gallegos Loaeza",
     "license": "MIT",
     "repository":{
         "type": "git",
-        "url": "git+https://github.com/marco-gallegos/insomnie",
+        "url": "git+https://github.com/marco-gallegos/insomnie"
     },
-    "homepage"": "https://github.com/marco-gallegos/insomnie"",
+    "homepage": "https://github.com/marco-gallegos/insomnie",
     "dependencies": {
         "axios": "^1.4.0",
         "blessed": "^0.1.81",
