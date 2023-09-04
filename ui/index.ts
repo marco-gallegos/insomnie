@@ -1,4 +1,5 @@
 import blessed from "blessed"
+import axios from "axios"
 
 //const dropdown = blessed.list({
     //parent: screen,
@@ -252,13 +253,52 @@ export const preview = blessed.box({
     },
 });
 
+//import { screen, sendButton, preview } from "./ui"
 
-//preview.setContent(loremText);
+//Función para realizar la petición y mostrar los resultados
+const makeRequest = async () => {
+    const method:string = !!methodList.options?.items ? methodList.options.items[methodList.selected]:'GET'
+    const url:string = urlInput.getValue();
+    const headers = headersInput.getValue();
+    const body = bodyInput.getValue();
 
-//module.exports = {
-    //screen,
-    //preview,
-    //sendButton: sendButton,
-    //bodyLabel,
-    //bodyInput,
-//}
+    
+    const data = {
+        method,
+        url,
+        headers,
+        body
+    }
+
+    //try {
+        //const response = await axios({
+            //method,
+            //url,
+            //headers: headers ? JSON.parse(headers) : null,
+            //data: body ? JSON.parse(body):null,
+        //})
+
+        //preview.setContent(JSON.stringify(response.data, null, 2));
+    //} catch (error) {
+        //preview.setContent(`Error: ${error.message}`);
+    //}
+    
+    preview.setContent(`hola marco ${Date.now()}\n ${JSON.stringify(data, null, 2)}`)
+    //screen.render();
+}
+
+
+export const renderui = () => {
+    // Asociar la función al evento "click" del botón
+    sendButton.on('press', makeRequest);
+
+    // Manejar eventos de teclado
+    screen.key(['escape', 'q', 'C-c'], () => process.exit(0));
+    
+    preview.setContent(loremText);
+
+    // Mostrar la interfaz
+    screen.render();
+
+}
+

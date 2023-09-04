@@ -1,7 +1,6 @@
 #!/usr/bin/env node
-//import { screen, sendButton, preview } from "./ui"
 import createDbConnection, { insert, closeDb } from "./repository"
-
+import commander from "commander"
 
 console.log("A =============================")
 const db = createDbConnection()
@@ -9,45 +8,25 @@ insert(db)
 closeDb(db)
 console.log("B =============================")
 
+commander
+  .version('1.0.0')
+  .description('Una aplicación CLI simple para hacer peticiones http.')
+  .option('-u, --url <url>', 'La URL que deseas procesar')
+  .option('-H, --headers <headers>', 'Las cabeceras en formato JSON')
+  .parse(process.argv);
 
-// Función para realizar la petición y mostrar los resultados
-const makeRequest = async () => {
-    //preview.setContent(`hola marco ${Date.now()}`)
-    //screen.render()
-    //const method:string = !!methodList.options?.items ? methodList.options.items[methodList.selected]:'GET'
-    //const url:string = urlInput.getValue();
-    //const headers = headersInput.getValue();
-    //const body = bodyInput.getValue();
+//// Comprueba si no se proporcionaron parámetros 2 because 0 => node, 1 => 
+if (process.argv.length > 2) {
+    console.log("non rendering ================>", process.argv)
+    // Procesa los parámetros de URL y cabeceras
+    const url = commander.url;
+    const headers = commander.headers ? JSON.parse(commander.headers) : {};
 
-    ////console.debug({
-        ////method,
-        ////url,
-        ////headers,
-        ////body
-    ////})
-
-    //try {
-        //const response = await axios({
-            //method,
-            //url,
-            //headers: headers ? JSON.parse(headers) : null,
-            //data: body ? JSON.parse(body):null,
-        //})
-
-        //preview.setContent(JSON.stringify(response.data, null, 2));
-    //} catch (error) {
-        //preview.setContent(`Error: ${error.message}`);
-    //}
-
-    //screen.render();
+    //process.exit(0)
+}else{
+    // weird bug if this is imported from the begin you need to procces.exit or you get a kind of blessed empty screen 
+    const ui = require("./ui")
+    console.log("Rendering ================>")
+    ui.renderui()
 }
 
-
-// Asociar la función al evento "click" del botón
-//sendButton.on('press', makeRequest);
-
-// Manejar eventos de teclado
-//screen.key(['escape', 'q', 'C-c'], () => process.exit(0));
-
-// Mostrar la interfaz
-//screen.render();

@@ -1,6 +1,6 @@
 {
     "name": "insomnie",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "insomnie is a rest client for the terminal (TUI) ",
     "main": "index.ts",
     "private": false,
@@ -21,7 +21,9 @@
         "@types/sqlite3": "^3.1.8",
         "axios": "^1.4.0",
         "blessed": "^0.1.81",
-        "sqlite3": "^5.1.6"
+        "commander": "^11.0.0",
+        "sqlite3": "^5.1.6",
+        "zustand": "^4.4.1"
     },
     "devDependencies": {
         "@types/blessed": "^0.1.22",

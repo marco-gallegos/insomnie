@@ -1,3 +1,4 @@
+*.db
 *.ignore.*
 # Logs
 logs
