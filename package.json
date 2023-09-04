@@ -1,6 +1,6 @@
 {
     "name": "insomnie",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "insomnie is a rest client for the terminal (TUI) ",
     "main": "index.ts",
     "private": false,
@@ -14,11 +14,22 @@
     "bin": {
         "insomnie": "./insomnie.js"
     },
-    "keywords": [],
-    "author": "",
+    "keywords": [
+        "rest",
+        "rest client",
+        "tui",
+        "cli",
+        "http",
+        "client",
+    ],
+    "author": "Marco A. Gallegos Loaeza",
     "license": "MIT",
+    "repository":{
+        "type": "git",
+        "url": "git+https://github.com/marco-gallegos/insomnie",
+    },
+    "homepage"": "https://github.com/marco-gallegos/insomnie"",
     "dependencies": {
-        "@types/sqlite3": "^3.1.8",
         "axios": "^1.4.0",
         "blessed": "^0.1.81",
         "commander": "^11.0.0",
@@ -27,6 +38,7 @@
     },
     "devDependencies": {
         "@types/blessed": "^0.1.22",
+        "@types/sqlite3": "^3.1.8",
         "esbuild": "^0.18.8",
         "nodemon": "^2.0.22"
     }
