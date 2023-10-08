@@ -76,8 +76,8 @@ the tui works without the cli with local config saving.
     - [x] npm project works using npm i -g
 - [ ] configuration basics cli first steps
     - [x] is possible store using sqlite
-    - [ ] cli boots tui only if no other command is provided
-    - [ ] define tables to store rtequests
+    - [x] cli boots tui only if no other command is provided
+    - [x] define tables to store requests
     - [ ] CRUD for requests working on cli
     - [ ]
     - [ ] is possible store env variables (api url)

@@ -9,7 +9,10 @@
         "buildInline": "esbuild index.ts --bundle --platform=node --minify --packages=external --outfile=insomnie.js",
         "build": "node build.mjs prod",
         "build:dev": "node build.mjs dev",
-        "watch": "nodemon --exec 'npm run build:dev' -e ts"
+        "watch": "nodemon --exec 'npm run build:dev' -e ts",
+       
+        "migrate": "sqlite3 requests.db '.read dbstructure.sql'",
+        "cleandb": "sqlite3 requests.db '.read dbclean.sql'"
     },
     "bin": {
         "insomnie": "./insomnie.js"

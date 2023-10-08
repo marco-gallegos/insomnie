@@ -283,10 +283,19 @@ var createTable = async (db2) => {
         CREATE TABLE requests
         (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            url   VARCHAR(250) NOT NULL,
             path   VARCHAR(250) NOT NULL,
-            headers   VARCHAR(250),
-            weight INTEGER NOT NULL
+            type   VARCHAR(10) NOT NULL,
+            headers   TEXT,
+            body   TEXT,
+            params TEXT,
+            authentication_type VARCHAR(10),
+            authentication_token VARCHAR(250),
+        );
+
+        CREATE TABLE configurations
+        (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            url VARCHAR(250) NOT NULL,
         );
     `);
 };
