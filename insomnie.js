@@ -274,73 +274,24 @@ Etiam eu rutrum nunc, a eleifend ante. Fusce pharetra purus nec ex placerat phar
   }
 });
 
-// repository/index.ts
-var import_fs = __toESM(require("fs"));
-var sqlite3 = require("sqlite3").verbose();
-var filepath = "./requests.db";
-var createTable = async (db2) => {
-  db2.exec(`
-        CREATE TABLE requests
-        (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            path   VARCHAR(250) NOT NULL,
-            type   VARCHAR(10) NOT NULL,
-            headers   TEXT,
-            body   TEXT,
-            params TEXT,
-            authentication_type VARCHAR(10),
-            authentication_token VARCHAR(250),
-        );
-
-        CREATE TABLE configurations
-        (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            url VARCHAR(250) NOT NULL,
-        );
-    `);
-};
-var migrate = (db2) => {
-  createTable(db2);
-};
-function createDbConnection() {
-  if (import_fs.default.existsSync(filepath)) {
-    return new sqlite3.Database(filepath);
-  } else {
-    const db2 = new sqlite3.Database(filepath, (error) => {
-      if (error) {
-        return console.error(error.message);
-      }
-    });
-    console.log("Connection with SQLite has been established");
-    migrate(db2);
-    return db2;
-  }
-}
-var closeDb = (db2) => {
-  db2.close((err) => {
-    if (err) {
-      console.error("Error al cerrar la base de datos", err.message);
-    } else {
-      console.log("Base de datos cerrada");
-    }
-  });
-};
-var insert = (db2) => {
-  db2.run('INSERT INTO requests VALUES (null, "url", "Juan", "none", 1)');
-};
-
 // index.ts
 var import_commander = __toESM(require("commander"));
-console.log("A =============================");
-var db = createDbConnection();
-insert(db);
-closeDb(db);
-console.log("B =============================");
-import_commander.default.version("1.0.0").description("Una aplicaci\xF3n CLI simple para hacer peticiones http.").option("-u, --url <url>", "La URL que deseas procesar").option("-H, --headers <headers>", "Las cabeceras en formato JSON").parse(process.argv);
+var cli = import_commander.default.program.version("1.0.0").description("Una aplicaci\xF3n CLI simple para hacer peticiones http.").option("-u, --url <url>", "URL to hit").option("-H, --headers <headers>", "Headers in JSON format").option("-B, --body <body>", "Request body").option("-t, --type <type>", "request type GET, POST, PUT ...").option("-rq, --request <id>", "request to execute").option("-s, --save", "Save request.").option("-d, --delete <id>", "Delete the request with id:<id>").option("-v, --view <id>", "Show all datails freom the request with id:<id>").parse(process.argv);
 if (process.argv.length > 2) {
-  console.log("non rendering ================>", process.argv);
-  const url = import_commander.default.url;
-  const headers = import_commander.default.headers ? JSON.parse(import_commander.default.headers) : {};
+  console.log("non rendering ================>");
+  const cliParams = cli.opts();
+  const requestData = {
+    url: cliParams.url,
+    type: cliParams.url,
+    headers: cliParams.headers ? JSON.parse(cliParams.headers) : {},
+    body: cliParams.url
+  };
+  const requestManagementFlags = {
+    save: !!cliParams.save ? true : false
+  };
+  console.table(requestData);
+  console.table(requestManagementFlags);
+  process.exit(0);
 } else {
   const ui = (init_ui(), __toCommonJS(ui_exports));
   console.log("Rendering ================>");

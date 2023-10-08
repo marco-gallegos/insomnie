@@ -79,11 +79,13 @@ the tui works without the cli with local config saving.
     - [x] cli boots tui only if no other command is provided
     - [x] define tables to store requests
     - [ ] CRUD for requests working on cli
-    - [ ]
-    - [ ] is possible store env variables (api url)
-    - [ ] is possible recover env variables 
-    - [ ] define all supported headers for api
+    - [ ] is posible store project url (url is base url then every url should have a path execute url is url + path)
+    - [x] define all supported headers for api -> defined a generic way
 - [ ] tui 1st step
-    - [ ]  
+    - [ ] can make a request without store
+    - [ ] can store current request
+    - [ ] can store url and path
+    - [ ] can recover a stored request
+        - [ ] menu to show stored requests
 
 

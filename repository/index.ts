@@ -2,6 +2,9 @@ import fs from "fs"
 const sqlite3 = require("sqlite3").verbose();
 const filepath = "./requests.db";
 //import {} from "@types/sqlite3"
+//
+
+// TODO: use the dbstructure.sql code instead of hardcoded sql string
 
 function selectrequest(db) {
     const rows:any[] = []
