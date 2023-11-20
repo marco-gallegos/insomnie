@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import createDbConnection, { insert, closeDb } from "./repository"
-import commander from "commander"
+import commander, { Option } from "commander"
 
 //console.log("A =============================")
 //const db = createDbConnection()
@@ -11,14 +11,16 @@ import commander from "commander"
 const cli = commander.program
     .version('1.0.0')
     .description('Una aplicación CLI simple para hacer peticiones http.')
-    .option('-u, --url <url>', 'URL to hit')
-    .option('-H, --headers <headers>', 'Headers in JSON format')
-    .option('-B, --body <body>', 'Request body')
-    .option('-t, --type <type>', 'request type GET, POST, PUT ...')
-    .option('-rq, --request <id>', 'request to execute')
-    .option('-s, --save', 'Save request.')
-    .option('-d, --delete <id>', 'Delete the request with id:<id>')
-    .option('-v, --view <id>', 'Show all datails freom the request with id:<id>')
+    //.addOption(new Option('-d, --drink <size>', 'drink size').choices(['small', 'medium', 'large']).default('small', 'The small version.'))
+    .addOption(new Option('-u, --url <url>', 'URL to hit'))
+    .addOption(new Option('-H, --headers <headers>', 'Headers in JSON format'))
+    .addOption(new Option('-B, --body <body>', 'Request body'))
+    .addOption(new Option('-t, --type <type>', 'request type GET, POST, ...').choices(['get', 'post', 'put', 'delete', 'patch', 'gql']))
+    .addOption(new Option('-rq, --request <id>', 'request to execute'))
+    .addOption(new Option('-s, --save', 'Save request.'))
+    .addOption(new Option('-d, --delete <id>', 'Delete the request with id:<id>'))
+    .addOption(new Option('-v, --view <id>', 'Show all datails freom the request with id:<id>'))
+    .addOption(new Option('-l, --list', 'Show all requests according current space.'))
     .parse(process.argv);
 
 //// Comprueba si no se proporcionaron parámetros 2 because 0 => node, 1 => scriptname (insomnie.js)
@@ -26,6 +28,7 @@ if (process.argv.length > 2) {
     console.log("non rendering ================>")
     
     const cliParams = cli.opts()
+    console.table(cliParams)
     // Procesa los parámetros de URL y cabeceras
     const requestData = {
         url: cliParams.url,
