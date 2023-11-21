@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import createDbConnection, { insert, closeDb } from "./repository"
-import commander, { Option } from "commander"
+import commander, { Option } from "commander";
+import { validateMinimalRequest } from './common/validator';
 
 //console.log("A =============================")
 //const db = createDbConnection()
@@ -13,6 +14,7 @@ const cli = commander.program
     .description('Una aplicación CLI simple para hacer peticiones http.')
     //.addOption(new Option('-d, --drink <size>', 'drink size').choices(['small', 'medium', 'large']).default('small', 'The small version.'))
     .addOption(new Option('-u, --url <url>', 'URL to hit'))
+    .addOption(new Option('-p, --path <path>', 'url path part'))
     .addOption(new Option('-H, --headers <headers>', 'Headers in JSON format'))
     .addOption(new Option('-B, --body <body>', 'Request body'))
     .addOption(new Option('-t, --type <type>', 'request type GET, POST, ...').choices(['get', 'post', 'put', 'delete', 'patch', 'gql']))
@@ -26,26 +28,30 @@ const cli = commander.program
 //// Comprueba si no se proporcionaron parámetros 2 because 0 => node, 1 => scriptname (insomnie.js)
 if (process.argv.length > 2) {
     console.log("non rendering ================>")
-    
+
     const cliParams = cli.opts()
     console.table(cliParams)
     // Procesa los parámetros de URL y cabeceras
     const requestData = {
         url: cliParams.url,
-        type: cliParams.url,
+        path: cliParams.path ?? '',
+        type: cliParams.type ?? 'GET',
         headers: cliParams.headers ? JSON.parse(cliParams.headers) : {},
         body: cliParams.url,
     }
 
     const requestManagementFlags = {
-        save: !!cliParams.save ? true:false,
+        save: !!cliParams.save,
     }
-    
 
     console.table(requestData)
     console.table(requestManagementFlags)
+
+    const hasMinimumData: { valid: boolean, errors: object[] } = validateMinimalRequest(requestData)
+
+    console.table({ hasMinimumData })
     process.exit(0)
-}else{
+} else {
     // weird bug if this is imported from the begin you need to procces.exit or you get a kind of blessed empty screen 
     const ui = require("./ui")
     console.log("Rendering ================>")

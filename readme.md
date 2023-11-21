@@ -4,7 +4,7 @@ Insomnie is the french translation of insomnio from the spanish and is a kind of
 
 ## Project Focuses
 
- KISS - Keep it simple, stupid.
+- KISS - Keep it simple, stupid.
 
 
 This project should be easy to read and to use i prefer something simple and lightweight rather than something complex and heavy even if this makes a bit less friendly the UX, im assuming this is used by professionals.

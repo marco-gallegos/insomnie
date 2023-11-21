@@ -276,22 +276,45 @@ Etiam eu rutrum nunc, a eleifend ante. Fusce pharetra purus nec ex placerat phar
 
 // index.ts
 var import_commander = __toESM(require("commander"));
-var cli = import_commander.default.program.version("1.0.0").description("Una aplicaci\xF3n CLI simple para hacer peticiones http.").addOption(new import_commander.Option("-u, --url <url>", "URL to hit")).addOption(new import_commander.Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new import_commander.Option("-B, --body <body>", "Request body")).addOption(new import_commander.Option("-t, --type <type>", "request type GET, POST, ...").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new import_commander.Option("-rq, --request <id>", "request to execute")).addOption(new import_commander.Option("-s, --save", "Save request.")).addOption(new import_commander.Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new import_commander.Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new import_commander.Option("-l, --list", "Show all requests according current space.")).parse(process.argv);
+
+// common/validator/index.ts
+var import_joi = __toESM(require("joi"));
+var minimalRequestValidator = import_joi.default.object({
+  url: import_joi.default.string().min(10).required(),
+  path: import_joi.default.string().empty(""),
+  type: import_joi.default.string().empty(""),
+  headers: import_joi.default.any(),
+  body: import_joi.default.any()
+});
+var validateMinimalRequest = (data) => {
+  const { error, value } = minimalRequestValidator.validate(data);
+  const response = {
+    valid: error === void 0,
+    errors: error?.details ?? null
+  };
+  return response;
+};
+
+// index.ts
+var cli = import_commander.default.program.version("1.0.0").description("Una aplicaci\xF3n CLI simple para hacer peticiones http.").addOption(new import_commander.Option("-u, --url <url>", "URL to hit")).addOption(new import_commander.Option("-p, --path <path>", "url path part")).addOption(new import_commander.Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new import_commander.Option("-B, --body <body>", "Request body")).addOption(new import_commander.Option("-t, --type <type>", "request type GET, POST, ...").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new import_commander.Option("-rq, --request <id>", "request to execute")).addOption(new import_commander.Option("-s, --save", "Save request.")).addOption(new import_commander.Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new import_commander.Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new import_commander.Option("-l, --list", "Show all requests according current space.")).parse(process.argv);
 if (process.argv.length > 2) {
   console.log("non rendering ================>");
   const cliParams = cli.opts();
   console.table(cliParams);
   const requestData = {
     url: cliParams.url,
-    type: cliParams.url,
+    path: cliParams.path ?? "",
+    type: cliParams.type ?? "GET",
     headers: cliParams.headers ? JSON.parse(cliParams.headers) : {},
     body: cliParams.url
   };
   const requestManagementFlags = {
-    save: !!cliParams.save ? true : false
+    save: !!cliParams.save
   };
   console.table(requestData);
   console.table(requestManagementFlags);
+  const hasMinimumData = validateMinimalRequest(requestData);
+  console.table({ hasMinimumData });
   process.exit(0);
 } else {
   const ui = (init_ui(), __toCommonJS(ui_exports));

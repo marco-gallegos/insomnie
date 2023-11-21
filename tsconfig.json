@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        // ... otras opciones ...
+        "baseUrl": ".", // Ruta base para imports absolutos
+        "paths": {
+            "@/*": [
+                "*"
+            ] // Mapeo de imports absolutos
+        }
+    }
+}
