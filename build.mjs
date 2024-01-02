@@ -14,6 +14,8 @@ const args = process.argv.filter((value, index) => index > 1 ? value : null)
 // dev if no arg is passed
 const isDev = !args[0] || (args[0] && args[0] === "dev") ? true : false
 
+const buildStatuses = []
+
 let buildStatus = {}
 
 if (isDev === true) {
@@ -26,6 +28,20 @@ if (isDev === true) {
         logLevel: 'debug',
         tsconfig: 'tsconfig.json'
     })
+
+    buildStatuses.push(buildStatus)
+
+    buildStatus = await esbuild.build({
+        entryPoints: ['api.ts'],
+        bundle: true,
+        outfile: 'api.js',
+        platform: 'node',
+        packages: 'external',
+        logLevel: 'debug',
+        tsconfig: 'tsconfig.json'
+    })
+
+    buildStatuses.push(buildStatus)
 } else {
     buildStatus = await esbuild.build({
         entryPoints: ['index.ts'],
@@ -36,8 +52,10 @@ if (isDev === true) {
         minify: true,
         logLevel: 'debug'
     })
-
+    buildStatuses.push(buildStatus)
 }
 
+for (const buildStatus of buildStatuses) {
+    console.table(buildStatus)
+}
 
-console.table(buildStatus)

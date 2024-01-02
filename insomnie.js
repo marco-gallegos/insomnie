@@ -296,7 +296,13 @@ var validateMinimalRequest = (data) => {
 };
 
 // index.ts
-var cli = import_commander.default.program.version("1.0.0").description("Una aplicaci\xF3n CLI simple para hacer peticiones http.").addOption(new import_commander.Option("-u, --url <url>", "URL to hit")).addOption(new import_commander.Option("-p, --path <path>", "url path part")).addOption(new import_commander.Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new import_commander.Option("-B, --body <body>", "Request body")).addOption(new import_commander.Option("-t, --type <type>", "request type GET, POST, ...").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new import_commander.Option("-rq, --request <id>", "request to execute")).addOption(new import_commander.Option("-s, --save", "Save request.")).addOption(new import_commander.Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new import_commander.Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new import_commander.Option("-l, --list", "Show all requests according current space.")).parse(process.argv);
+var import_worker_threads = require("worker_threads");
+var cli = import_commander.default.program.version("1.0.0").description("Una aplicaci\xF3n CLI simple para hacer peticiones http with TUI version.").addOption(new import_commander.Option("-u, --url <url>", "URL to hit")).addOption(new import_commander.Option("-p, --path <path>", "url path part")).addOption(new import_commander.Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new import_commander.Option("-B, --body <body>", "Request body")).addOption(new import_commander.Option("-t, --type <type>", "request type GET, POST, ...").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new import_commander.Option("-rq, --request <id>", "request to execute")).addOption(new import_commander.Option("-s, --save", "Save request.")).addOption(new import_commander.Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new import_commander.Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new import_commander.Option("-l, --list", "Show all requests according current space.")).parse(process.argv);
+var apiWorker = new import_worker_threads.Worker("./api.js");
+apiWorker.on("message", (response) => {
+  console.debug("response from worker", response);
+});
+apiWorker.postMessage({ hello: "world" });
 if (process.argv.length > 2) {
   console.log("non rendering ================>");
   const cliParams = cli.opts();

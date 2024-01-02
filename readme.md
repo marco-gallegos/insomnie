@@ -78,8 +78,9 @@ the tui works without the cli with local config saving.
     - [x] is possible store using sqlite
     - [x] cli boots tui only if no other command is provided
     - [x] define tables to store requests
-    - [ ] CRUD for requests working on cli
-    - [ ] is posible store project url (url is base url then every url should have a path execute url is url + path)
+    - [ ] CRUD for requests working on cli -> not now
+    - [ ] is posible store project url (url is base url then every url should have a path execute url is url + path) -> not now
+    - [ ] 
     - [x] define all supported headers for api -> defined a generic way
 - [ ] tui 1st step
     - [ ] can make a request without store

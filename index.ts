@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-import createDbConnection, { insert, closeDb } from "./repository"
-import commander, { Option } from "commander";
-import { validateMinimalRequest } from './common/validator';
+import createDbConnection, { insert, closeDb } from './repository'
+import commander, { Option } from 'commander'
+import { validateMinimalRequest } from './common/validator'
+import { Worker } from 'worker_threads'
 
 //console.log("A =============================")
 //const db = createDbConnection()
@@ -11,7 +12,7 @@ import { validateMinimalRequest } from './common/validator';
 
 const cli = commander.program
     .version('1.0.0')
-    .description('Una aplicación CLI simple para hacer peticiones http.')
+    .description('Una aplicación CLI simple para hacer peticiones http with TUI version.')
     //.addOption(new Option('-d, --drink <size>', 'drink size').choices(['small', 'medium', 'large']).default('small', 'The small version.'))
     .addOption(new Option('-u, --url <url>', 'URL to hit'))
     .addOption(new Option('-p, --path <path>', 'url path part'))
@@ -25,7 +26,15 @@ const cli = commander.program
     .addOption(new Option('-l, --list', 'Show all requests according current space.'))
     .parse(process.argv);
 
-//// Comprueba si no se proporcionaron parámetros 2 because 0 => node, 1 => scriptname (insomnie.js)
+const apiWorker = new Worker("./api.js")
+
+apiWorker.on("message", (response) => {
+    console.debug('response from worker', response)
+})
+
+apiWorker.postMessage({ hello: 'world' })
+
+// Comprueba si no se proporcionaron parámetros 2 because 0 => node, 1 => scriptname (insomnie.js)
 if (process.argv.length > 2) {
     console.log("non rendering ================>")
 
