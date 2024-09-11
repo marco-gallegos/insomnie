@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-import createDbConnection, { insert, closeDb } from "./repository"
+// import createDbConnection, { insert, closeDb } from "./repository"
 import commander, { Option } from "commander"
+import requestController from './controller/requestController';
 
 //console.log("A =============================")
 //const db = createDbConnection()
@@ -44,6 +45,9 @@ if (process.argv.length > 2) {
 
     console.table(requestData)
     console.table(requestManagementFlags)
+
+    requestController.call(requestData);
+
     process.exit(0)
 }else{
     // weird bug if this is imported from the begin you need to procces.exit or you get a kind of blessed empty screen 

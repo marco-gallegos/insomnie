@@ -276,6 +276,23 @@ Etiam eu rutrum nunc, a eleifend ante. Fusce pharetra purus nec ex placerat phar
 
 // index.ts
 var import_commander = __toESM(require("commander"));
+
+// controller/requestController.ts
+var requestController = {
+  call: () => {
+    console.debug("calling api");
+    return "call";
+  },
+  save: () => {
+    return "save";
+  },
+  delete: () => {
+    return "delete";
+  }
+};
+var requestController_default = requestController;
+
+// index.ts
 var cli = import_commander.default.program.version("1.0.0").description("Una aplicaci\xF3n CLI simple para hacer peticiones http.").addOption(new import_commander.Option("-u, --url <url>", "URL to hit")).addOption(new import_commander.Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new import_commander.Option("-B, --body <body>", "Request body")).addOption(new import_commander.Option("-t, --type <type>", "request type GET, POST, ...").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new import_commander.Option("-rq, --request <id>", "request to execute")).addOption(new import_commander.Option("-s, --save", "Save request.")).addOption(new import_commander.Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new import_commander.Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new import_commander.Option("-l, --list", "Show all requests according current space.")).parse(process.argv);
 if (process.argv.length > 2) {
   console.log("non rendering ================>");
@@ -292,6 +309,7 @@ if (process.argv.length > 2) {
   };
   console.table(requestData);
   console.table(requestManagementFlags);
+  requestController_default.call(requestData);
   process.exit(0);
 } else {
   const ui = (init_ui(), __toCommonJS(ui_exports));

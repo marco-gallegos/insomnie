@@ -11,6 +11,7 @@ interface HttpRequest {
 }
 
 interface IController {
+    call: () => string
     save: () => string
-    delete: () => 
+    delete: () => string
 }
