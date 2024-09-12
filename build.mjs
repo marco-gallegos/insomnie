@@ -28,9 +28,11 @@ if (isDev === true) {
         platform: 'node',
         packages: 'external',
         minify: true,
-        logLevel: 'debug'
+        logLevel: 'debug',
+        alias: {
+            "@": path.resolve("./")
+        }
     })
-
 }
 
 
