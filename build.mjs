@@ -1,4 +1,5 @@
 import * as esbuild from 'esbuild'
+import path from 'path'
 
 const args = process.argv.filter((value, index) => index > 1 ? value:null )
 
@@ -14,7 +15,10 @@ if (isDev === true) {
         outfile: 'insomnie.js',
         platform: 'node',
         packages: 'external',
-        logLevel: 'debug'
+        logLevel: 'debug',
+        alias: {
+            "@": path.resolve("./")
+        }
     })
 } else {
     buildStatus = await esbuild.build({

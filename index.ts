@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // import createDbConnection, { insert, closeDb } from "./repository"
 import commander, { Option } from "commander"
-import requestController from './controller/requestController';
+import requestController from '@/controller/requestController';
 
 //console.log("A =============================")
 //const db = createDbConnection()

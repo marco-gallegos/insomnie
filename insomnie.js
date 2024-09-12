@@ -279,7 +279,7 @@ var import_commander = __toESM(require("commander"));
 
 // controller/requestController.ts
 var requestController = {
-  call: () => {
+  call: async (requestData) => {
     console.debug("calling api");
     return "call";
   },
