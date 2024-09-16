@@ -1,4 +1,6 @@
-interface HttpRequest {
+import type { IRequestData } from "@/types";
+
+export interface HttpRequest {
     url: string;
     method: string;
     headers?: Record<string, string>;
@@ -10,8 +12,14 @@ interface HttpRequest {
     };
 }
 
-interface IController {
-    call: () => string
+export interface ICallResponseType {
+    response: object,
+    error: object,
+}
+
+export interface IController {
+    call: (requestData: IRequestData) => ICallResponseType
+    test: (requestData: IRequestData) => boolean
     save: () => string
     delete: () => string
 }
