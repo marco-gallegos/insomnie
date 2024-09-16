@@ -28,10 +28,10 @@ cli.parse(process.argv);
 
 //// Comprueba si no se proporcionaron parámetros 2 because 0 => node, 1 => scriptname (insomnie.js)
 if (process.argv.length > 2) {
-    console.log("non rendering ================>")
+    // console.log("non rendering ================>")
     
     const cliParams = cli.opts()
-    console.table(cliParams)
+    // console.table(cliParams)
     // Procesa los parámetros de URL y cabeceras
     const requestData = {
         url: cliParams.url,
@@ -45,14 +45,14 @@ if (process.argv.length > 2) {
         save: !!cliParams.save ? true:false,
     };
 
-    console.table(requestData);
-    console.table(requestManagementFlags);
+    // console.table(requestData);
+    // console.table(requestManagementFlags);
 
     const requestPromise = requestController.call(requestData);
     requestPromise.then((response) => {
         // extracct states from api response if this is not null
         const responseData = response.response?.data ? response.response.data:response.error?.response?.data;
-        console.log("🚀 ~ file: index.ts:54 ~ responseData:", responseData)
+        // console.log("🚀 ~ file: index.ts:54 ~ responseData:", responseData)
         
         const data = {
             status: response.error ? response.error.status:response.response?.status,

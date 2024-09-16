@@ -301,9 +301,7 @@ var requestController_default = requestController;
 var cli = program.version("1.0.0").description("Una aplicaci\xF3n CLI simple para hacer peticiones http.").addOption(new Option("-u, --url <url>", "URL to hit, full parth or base url to work with  -up - url path")).addOption(new Option("-up, --urlpath <url>", "URL ")).addOption(new Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new Option("-B, --body <body>", "Request body")).addOption(new Option("-t, --type <type>", "request type GET, POST, ...").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new Option("-rq, --request <id>", "request to execute")).addOption(new Option("-s, --save", "Save request.")).addOption(new Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new Option("-l, --list", "Show all requests according current space."));
 cli.parse(process.argv);
 if (process.argv.length > 2) {
-  console.log("non rendering ================>");
   const cliParams = cli.opts();
-  console.table(cliParams);
   const requestData = {
     url: cliParams.url,
     type: cliParams.type,
@@ -313,12 +311,9 @@ if (process.argv.length > 2) {
   const requestManagementFlags = {
     save: !!cliParams.save ? true : false
   };
-  console.table(requestData);
-  console.table(requestManagementFlags);
   const requestPromise = requestController_default.call(requestData);
   requestPromise.then((response) => {
     const responseData = response.response?.data ? response.response.data : response.error?.response?.data;
-    console.log("\u{1F680} ~ file: index.ts:54 ~ responseData:", responseData);
     const data = {
       status: response.error ? response.error.status : response.response?.status,
       data: responseData?.length > 500 ? responseData.slice(0, 500) + "..." : responseData,
