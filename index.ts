@@ -2,6 +2,8 @@
 // import createDbConnection, { insert, closeDb } from "./repository"
 import { Option, program } from "commander"
 import requestController from '@/controller/requestController';
+import chalk from 'chalk';
+import Table from 'cli-table3';
 
 //console.log("A =============================")
 //const db = createDbConnection()
@@ -13,8 +15,9 @@ const cli = program
     .version('1.0.0')
     .description('Una aplicación CLI simple para hacer peticiones http.')
     //.addOption(new Option('-d, --drink <size>', 'drink size').choices(['small', 'medium', 'large']).default('small', 'The small version.'))
+    .addOption(new Option('-chk, --check-health', 'this enables check health mode to make a helth check on given urls.'))
     .addOption(new Option('-u, --url <url>', 'URL to hit, full parth or base url to work with  -up - url path'))
-    .addOption(new Option('-up, --urlpath <url>', 'URL '))
+    .addOption(new Option('-p, --urlpath <url>', 'a single ppath or a csv list of url paths to hit (path is a url complement <request_url> = <url> + <path>)'))
     .addOption(new Option('-H, --headers <headers>', 'Headers in JSON format'))
     .addOption(new Option('-B, --body <body>', 'Request body'))
     .addOption(new Option('-t, --type <type>', 'request type GET, POST, ...').choices(['get', 'post', 'put', 'delete', 'patch', 'gql']))
@@ -26,12 +29,16 @@ const cli = program
 
 cli.parse(process.argv);
 
-//// Comprueba si no se proporcionaron parámetros 2 because 0 => node, 1 => scriptname (insomnie.js)
-if (process.argv.length > 2) {
-    // console.log("non rendering ================>")
-    
-    const cliParams = cli.opts()
-    // console.table(cliParams)
+const cliParams = cli.opts()
+console.table(cliParams)
+
+const checkHealthFlow:boolean = cliParams.checkHealth ?? false;
+const cliRequestFlow:boolean = process.argv.length > 2;
+const tuiRequestFlow:boolean = !cliRequestFlow;
+
+
+// Comprueba si no se proporcionaron parámetros 2 because 0 => node, 1 => scriptname (insomnie.js)
+if (cliRequestFlow) {
     // Procesa los parámetros de URL y cabeceras
     const requestData = {
         url: cliParams.url,
@@ -62,7 +69,21 @@ if (process.argv.length > 2) {
             errorStatus: response.error?.status,
         };
 
-        console.debug(data);
+        const consoleTable = new Table({
+            head: [chalk.white('State'), chalk.white('Body')],
+            colWidths: [80, 50],
+        });
+
+        const col1 = {
+            status: data.status,
+            errorMessage: data.errorMessage,
+            errorStatus: data.errorStatus,
+        }
+
+        consoleTable.push([ JSON.stringify(col1), JSON.stringify(data.data) ]);
+
+        // TODO: this is just printing a line, lets print multirow texts
+        console.log(consoleTable.toString());
     }).catch(error => {
     })
 

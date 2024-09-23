@@ -298,10 +298,15 @@ var requestController = {
 var requestController_default = requestController;
 
 // index.ts
-var cli = program.version("1.0.0").description("Una aplicaci\xF3n CLI simple para hacer peticiones http.").addOption(new Option("-u, --url <url>", "URL to hit, full parth or base url to work with  -up - url path")).addOption(new Option("-up, --urlpath <url>", "URL ")).addOption(new Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new Option("-B, --body <body>", "Request body")).addOption(new Option("-t, --type <type>", "request type GET, POST, ...").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new Option("-rq, --request <id>", "request to execute")).addOption(new Option("-s, --save", "Save request.")).addOption(new Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new Option("-l, --list", "Show all requests according current space."));
+import chalk from "chalk";
+import Table from "cli-table3";
+var cli = program.version("1.0.0").description("Una aplicaci\xF3n CLI simple para hacer peticiones http.").addOption(new Option("-chk, --check-health", "this enables check health mode to make a helth check on given urls.")).addOption(new Option("-u, --url <url>", "URL to hit, full parth or base url to work with  -up - url path")).addOption(new Option("-p, --urlpath <url>", "a single ppath or a csv list of url paths to hit (path is a url complement <request_url> = <url> + <path>)")).addOption(new Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new Option("-B, --body <body>", "Request body")).addOption(new Option("-t, --type <type>", "request type GET, POST, ...").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new Option("-rq, --request <id>", "request to execute")).addOption(new Option("-s, --save", "Save request.")).addOption(new Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new Option("-l, --list", "Show all requests according current space."));
 cli.parse(process.argv);
-if (process.argv.length > 2) {
-  const cliParams = cli.opts();
+var cliParams = cli.opts();
+console.table(cliParams);
+var checkHealthFlow = cliParams.checkHealth ?? false;
+var cliRequestFlow = process.argv.length > 2;
+if (cliRequestFlow) {
   const requestData = {
     url: cliParams.url,
     type: cliParams.type,
@@ -321,7 +326,17 @@ if (process.argv.length > 2) {
       errorMessage: response.error?.message,
       errorStatus: response.error?.status
     };
-    console.debug(data);
+    const consoleTable = new Table({
+      head: [chalk.white("State"), chalk.white("Body")],
+      colWidths: [80, 50]
+    });
+    const col1 = {
+      status: data.status,
+      errorMessage: data.errorMessage,
+      errorStatus: data.errorStatus
+    };
+    consoleTable.push([JSON.stringify(col1), JSON.stringify(data.data)]);
+    console.log(consoleTable.toString());
   }).catch((error) => {
   });
 } else {
