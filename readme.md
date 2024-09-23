@@ -1,10 +1,24 @@
 # Insomnie
 
-Insomnie is the french translation of insomnio from the spanish and is a kind of joke about the rest translation to the spanish (descansar).
+Insomnie is a lightweight CLI and TUI HTTP client for developers. Inspired by big projects like Postman, Insomnia, Bruno, Cartero, curl and httpie, but with a minimalist text-based interface. Test and debug APIs quickly with an intuitive and customizable tool.
+
+Insomnie is the french translation of insomnio (from the spanish) and is a kind of joke about the rest translation to the spanish (descansar).
+
+## Notes
+
+this is under active development and is not stable (but is usable) so is probable get some breaking changes in the future.
+
+right now only this features are working :
+
+- [x] CLI request using args config
+- [x] check healt to multiple paths using args config
+- [ ] Env variables from a local file
+- [ ] Env variables from a global file
+- [ ] CLI request using local file
 
 ## Project Focuses
 
- KISS - Keep it simple, stupid.
+### KISS - Keep it simple, stupid.
 
 
 This project should be easy to read and to use i prefer something simple and lightweight rather than something complex and heavy even if this makes a bit less friendly the UX, im assuming this is used by professionals.
@@ -12,6 +26,25 @@ This project should be easy to read and to use i prefer something simple and lig
 
 if this is easy to read and use then is easy to fork and extend.
 
+### Cutting Edge
+
+Use latest (stable) technologies is a must so if you can improve something with a brand new feature or lib just open a issue explaining it.
+
+current tech stack:
+
+- node >= 22
+- esbuild
+- node native fetch
+- top level await
+- ...
+
+### Terminal And Local First
+
+Boot up a heavy UI or use something extremly simple like curl to request a api is not enough.
+
+Ui solutions are very heavy in memory and boot time when you just want a simple get request to double check besides this you require a graphic environment.
+
+Cli solutions (at least right now 2024/09) are not compatible with envs and files or they are super simple like curl, this is not bad but i miss some advanced features like env, pretty print and Text User Interface. 
 
 ## what i want to do
 
