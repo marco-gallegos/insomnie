@@ -4,6 +4,8 @@ import { Option, program } from "commander"
 import requestController from '@/controller/requestController';
 import chalk from 'chalk';
 import Table from 'cli-table3';
+// flows import 
+import { printTable } from "./utiils";
 
 //console.log("A =============================")
 //const db = createDbConnection()
@@ -16,6 +18,7 @@ const cli = program
     .description('Una aplicación CLI simple para hacer peticiones http.')
     //.addOption(new Option('-d, --drink <size>', 'drink size').choices(['small', 'medium', 'large']).default('small', 'The small version.'))
     .addOption(new Option('-chk, --check-health', 'this enables check health mode to make a helth check on given urls.'))
+    .addOption(new Option('-tries, --tries', 'Max try number (on chk is how many times is executed).').default(10))
     .addOption(new Option('-u, --url <url>', 'URL to hit, full parth or base url to work with  -up - url path'))
     .addOption(new Option('-p, --urlpath <url>', 'a single ppath or a csv list of url paths to hit (path is a url complement <request_url> = <url> + <path>)'))
     .addOption(new Option('-H, --headers <headers>', 'Headers in JSON format'))
@@ -30,15 +33,39 @@ const cli = program
 cli.parse(process.argv);
 
 const cliParams = cli.opts()
-console.table(cliParams)
+// console.table(cliParams)
 
 const checkHealthFlow:boolean = cliParams.checkHealth ?? false;
+// Comprueba si no se proporcionaron parámetros 2 because 0 => node, 1 => scriptname (insomnie.js)
 const cliRequestFlow:boolean = process.argv.length > 2;
 const tuiRequestFlow:boolean = !cliRequestFlow;
 
+/**
+ * Funtion to generate full urls from -u and -p.
+ * 
+ * @param baseUrl 
+ * @param urlPaths 
+ * @returns 
+ */
+const generateFullUrls = (baseUrl: string, urlPaths: string): string[] => {
+    if (!urlPaths) {
+        return [baseUrl];
+    }
+    const paths = urlPaths.split(',').map(path => path.trim());
+    return paths.map(path => `${baseUrl}${path}`);
+};
 
-// Comprueba si no se proporcionaron parámetros 2 because 0 => node, 1 => scriptname (insomnie.js)
-if (cliRequestFlow) {
+
+if (checkHealthFlow) {
+    const fullPathUrls:string[] = generateFullUrls(cliParams.url, cliParams.urlpath);
+    for (let i = 0; i < cliParams.tries; i++) {
+        await printTable(fullPathUrls);
+        await new Promise(resolve => setTimeout(resolve, 500));
+    }
+    process.exit(0);
+}
+
+if (cliRequestFlow && !checkHealthFlow) {
     // Procesa los parámetros de URL y cabeceras
     const requestData = {
         url: cliParams.url,
@@ -75,12 +102,13 @@ if (cliRequestFlow) {
         });
 
         const col1 = {
+            url: requestData.url,
             status: data.status,
             errorMessage: data.errorMessage,
             errorStatus: data.errorStatus,
         }
 
-        consoleTable.push([ JSON.stringify(col1), JSON.stringify(data.data) ]);
+        consoleTable.push([ JSON.stringify(col1, null, 1), JSON.stringify(data.data, null, 1) ]);
 
         // TODO: this is just printing a line, lets print multirow texts
         console.log(consoleTable.toString());

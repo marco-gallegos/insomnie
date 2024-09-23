@@ -14,7 +14,7 @@ if (isDev === true) {
         bundle: true,
         outfile: 'insomnie.dev.js',
         platform: 'node',
-        target: ['es2022'],
+        target: ['esnext'],
         format: 'esm',
         minify: false,
         packages: 'external',

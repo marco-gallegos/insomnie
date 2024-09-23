@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import Table from 'cli-table3';
-import fetch from 'node:fetch';
+
 
 /**
  * 
@@ -8,22 +8,21 @@ import fetch from 'node:fetch';
  * @returns 
  */
 const fetchData = async (url) => {
-    try {
-      const response = await fetch(url);
-      //const data = await response.json();
-      return { url, status: response.status };
-    } catch (error) {
-      console.debug(error)
-      return { url, status: 'Error' };
-    }
-  };
+  try {
+    const response = await fetch(url);
+    // const data = await response.json();
+    return { url, status: response.status };
+  } catch (error) {
+    console.debug(error)
+    return { url, status: 'Error' };
+  }
+};
   
-  /**
-   * 
-   */
-  const printTable = async (urls: string[]) => {
+/**
+ * 
+*/
+export const printTable = async (urls: string[]) => {
     let tableData = [];
-  
     for (let url of urls) {
       tableData.push(await fetchData(url));
     }
@@ -42,12 +41,11 @@ const fetchData = async (url) => {
       } else {
         statusColor = chalk.yellow;
       }
-  
+      
+      // NOTE: /n or `` with enters increases height
       table.push([chalk.blue(row.url), statusColor(row.status)]);
     });
   
     console.log('\n' + chalk.bold(`Peticiones a ${urls.length} URLs:`) + '\n');
     console.log(table.toString());
-  
-    setTimeout(printTable, 2000); // Realiza la siguiente petición cada 2 segundos
   };

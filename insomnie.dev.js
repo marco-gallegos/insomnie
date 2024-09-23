@@ -298,15 +298,67 @@ var requestController = {
 var requestController_default = requestController;
 
 // index.ts
+import chalk2 from "chalk";
+import Table2 from "cli-table3";
+
+// utiils/index.ts
 import chalk from "chalk";
 import Table from "cli-table3";
-var cli = program.version("1.0.0").description("Una aplicaci\xF3n CLI simple para hacer peticiones http.").addOption(new Option("-chk, --check-health", "this enables check health mode to make a helth check on given urls.")).addOption(new Option("-u, --url <url>", "URL to hit, full parth or base url to work with  -up - url path")).addOption(new Option("-p, --urlpath <url>", "a single ppath or a csv list of url paths to hit (path is a url complement <request_url> = <url> + <path>)")).addOption(new Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new Option("-B, --body <body>", "Request body")).addOption(new Option("-t, --type <type>", "request type GET, POST, ...").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new Option("-rq, --request <id>", "request to execute")).addOption(new Option("-s, --save", "Save request.")).addOption(new Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new Option("-l, --list", "Show all requests according current space."));
+var fetchData = async (url) => {
+  try {
+    const response = await fetch(url);
+    return { url, status: response.status };
+  } catch (error) {
+    console.debug(error);
+    return { url, status: "Error" };
+  }
+};
+var printTable = async (urls) => {
+  let tableData = [];
+  for (let url of urls) {
+    tableData.push(await fetchData(url));
+  }
+  const table = new Table({
+    head: [chalk.white("URL"), chalk.white("Estado")],
+    colWidths: [80, 10]
+  });
+  tableData.forEach((row) => {
+    let statusColor;
+    if (row.status === "Error") {
+      statusColor = chalk.red;
+    } else if (row.status >= 200 && row.status < 300) {
+      statusColor = chalk.green;
+    } else {
+      statusColor = chalk.yellow;
+    }
+    table.push([chalk.blue(row.url), statusColor(row.status)]);
+  });
+  console.log("\n" + chalk.bold(`Peticiones a ${urls.length} URLs:`) + "\n");
+  console.log(table.toString());
+};
+
+// index.ts
+var cli = program.version("1.0.0").description("Una aplicaci\xF3n CLI simple para hacer peticiones http.").addOption(new Option("-chk, --check-health", "this enables check health mode to make a helth check on given urls.")).addOption(new Option("-tries, --tries", "Max try number (on chk is how many times is executed).").default(10)).addOption(new Option("-u, --url <url>", "URL to hit, full parth or base url to work with  -up - url path")).addOption(new Option("-p, --urlpath <url>", "a single ppath or a csv list of url paths to hit (path is a url complement <request_url> = <url> + <path>)")).addOption(new Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new Option("-B, --body <body>", "Request body")).addOption(new Option("-t, --type <type>", "request type GET, POST, ...").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new Option("-rq, --request <id>", "request to execute")).addOption(new Option("-s, --save", "Save request.")).addOption(new Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new Option("-l, --list", "Show all requests according current space."));
 cli.parse(process.argv);
 var cliParams = cli.opts();
-console.table(cliParams);
 var checkHealthFlow = cliParams.checkHealth ?? false;
 var cliRequestFlow = process.argv.length > 2;
-if (cliRequestFlow) {
+var generateFullUrls = (baseUrl, urlPaths) => {
+  if (!urlPaths) {
+    return [baseUrl];
+  }
+  const paths = urlPaths.split(",").map((path) => path.trim());
+  return paths.map((path) => `${baseUrl}${path}`);
+};
+if (checkHealthFlow) {
+  const fullPathUrls = generateFullUrls(cliParams.url, cliParams.urlpath);
+  for (let i = 0; i < cliParams.tries; i++) {
+    await printTable(fullPathUrls);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+  process.exit(0);
+}
+if (cliRequestFlow && !checkHealthFlow) {
   const requestData = {
     url: cliParams.url,
     type: cliParams.type,
@@ -326,16 +378,17 @@ if (cliRequestFlow) {
       errorMessage: response.error?.message,
       errorStatus: response.error?.status
     };
-    const consoleTable = new Table({
-      head: [chalk.white("State"), chalk.white("Body")],
+    const consoleTable = new Table2({
+      head: [chalk2.white("State"), chalk2.white("Body")],
       colWidths: [80, 50]
     });
     const col1 = {
+      url: requestData.url,
       status: data.status,
       errorMessage: data.errorMessage,
       errorStatus: data.errorStatus
     };
-    consoleTable.push([JSON.stringify(col1), JSON.stringify(data.data)]);
+    consoleTable.push([JSON.stringify(col1, null, 1), JSON.stringify(data.data, null, 1)]);
     console.log(consoleTable.toString());
   }).catch((error) => {
   });
