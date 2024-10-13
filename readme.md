@@ -18,11 +18,9 @@ right now only this features are working :
 
 ## Project Focuses
 
-### KISS - Keep it simple, stupid.
-
+### KISS - Keep it simple, stupid
 
 This project should be easy to read and to use i prefer something simple and lightweight rather than something complex and heavy even if this makes a bit less friendly the UX, im assuming this is used by professionals.
-
 
 if this is easy to read and use then is easy to fork and extend.
 
@@ -44,11 +42,11 @@ Boot up a heavy UI or use something extremly simple like curl to request a api i
 
 Ui solutions are very heavy in memory and boot time when you just want a simple get request to double check besides this you require a graphic environment.
 
-Cli solutions (at least right now 2024/09) are not compatible with envs and files or they are super simple like curl, this is not bad but i miss some advanced features like env, pretty print and Text User Interface. 
+Cli solutions (at least right now 2024/09) are not compatible with envs and files or they are super simple like curl, this is not bad but i miss some advanced features like env, pretty print and Text User Interface.
 
 ## what i want to do
 
-### requirement - spanish alert !!
+### requirement - spanish alert
 
 quiero un cliente rest que pueda funcionar tanto de forma global como de forma local, es decir por cada proyecto tener una configuracion "local" dicho cliente rest debe tener las siguientes caracteristicas inspiradas por clientes grandes como (postman, postwoman o insomnia) pero sobre una interfaz de texto (TUI).
 
@@ -60,8 +58,7 @@ quiero un cliente rest que pueda funcionar tanto de forma global como de forma l
 - carpetas o conjuntos de peticiones
 - la configuracion de la ultima ejecucion se guarda para recuperarla en la siguiente ejecucion
 - configuraciones de los headers
-- support for rest and gql 
-
+- support for rest and gql
 
 ademas quiero incluir las siguientes caracteristicas
 
@@ -76,18 +73,15 @@ ademas quiero incluir las siguientes caracteristicas
 - la ejecucion batch de peticiones guarda el ultimo estado en el historial
 - el tui trabaja con una peticion a la vez
 
-
 caracteristicas que veo posibles y seria cool tener pero no son esenciales
 
 - performance analisis tipo jmeter basado en multiples peticiones
-
 
 requisitos o limitaciones tecnicas
 
 - usar alguna sql like db
 - pensar en la reusabilidad
 - debo poder sustituir la db que se usa
-
 
 #### MVP
 
@@ -98,27 +92,31 @@ the tui works without the cli with local config saving.
 - tui works per project
 - the code is easy to extend
 
-
-
 ## Road Map
 
 - [x] cli boot
-    - [x] cli can boots the tui
+  - [x] cli can boots the tui
     - [x] works on linux
     - [x] npm project
     - [x] npm project works using npm i -g
 - [ ] configuration basics cli first steps
-    - [x] is possible store using sqlite
-    - [x] cli boots tui only if no other command is provided
-    - [x] define tables to store requests
-    - [ ] CRUD for requests working on cli
-    - [ ] is posible store project url (url is base url then every url should have a path execute url is url + path)
-    - [x] define all supported headers for api -> defined a generic way
+  - [x] is possible store using sqlite
+  - [x] cli boots tui only if no other command is provided
+  - [x] define tables to store requests
+  - [ ] CRUD for requests working on cli
+  - [ ] is posible store project url (url is base url then every url should have a path execute url is url + path)
+  - [x] define all supported headers for api -> defined a generic way
 - [ ] tui 1st step
-    - [ ] can make a request without store
-    - [ ] can store current request
-    - [ ] can store url and path
-    - [ ] can recover a stored request
-        - [ ] menu to show stored requests
+  - [ ] can make a request without store
+  - [ ] can store current request
+  - [ ] can store url and path
+  - [ ] can recover a stored request
+    - [ ] menu to show stored requests
 
+## Notes
 
+### sqlite
+
+i removed sqlite because is hard to compile is some non common environmnets (pythopn  distutils in python >3.11 and node gyp)
+
+is not in the roadmap anymore but if want to use it in the future lets use node or bun built in sqlite client.

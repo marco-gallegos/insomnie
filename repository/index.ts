@@ -1,5 +1,5 @@
 import fs from "fs"
-const sqlite3 = require("sqlite3").verbose();
+//const sqlite3 = require("sqlite3").verbose();
 const filepath = "./requests.db";
 //import {} from "@types/sqlite3"
 //
@@ -7,19 +7,19 @@ const filepath = "./requests.db";
 // TODO: use the dbstructure.sql code instead of hardcoded sql string
 
 function selectrequest(db) {
-    const rows:any[] = []
-    db.each(`SELECT * FROM requests limit 1`, (error, row) => {
-        if (error) {
-            throw new Error(error.message);
-        }
-        console.log(row);
-        rows.push(row)
-    });
-    return rows
+  const rows: any[] = []
+  db.each(`SELECT * FROM requests limit 1`, (error, row) => {
+    if (error) {
+      throw new Error(error.message);
+    }
+    console.log(row);
+    rows.push(row)
+  });
+  return rows
 }
 
 const createTable = async (db) => {
-    db.exec(`
+  db.exec(`
         CREATE TABLE requests
         (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,35 +41,38 @@ const createTable = async (db) => {
 }
 
 const migrate = (db) => {
-    createTable(db)
+  createTable(db)
 }
 
 export default function createDbConnection() {
-    if (fs.existsSync(filepath)) {
-        return new sqlite3.Database(filepath);
-    } else {
-        const db = new sqlite3.Database(filepath, (error) => {
-            if (error) {
-                return console.error(error.message);
-            }
-        });
-        console.log("Connection with SQLite has been established");
-        migrate(db)
-        return db;
-    }
+  /**
+  if (fs.existsSync(filepath)) {
+    return new sqlite3.Database(filepath);
+  } else {
+    const db = new sqlite3.Database(filepath, (error) => {
+      if (error) {
+        return console.error(error.message);
+      }
+    });
+    console.log("Connection with SQLite has been established");
+    migrate(db)
+    return db;
+  }
+  */
+  return null;
 }
 
 export const closeDb = (db) => {
-    db.close((err) => {
-      if (err) {
-        console.error('Error al cerrar la base de datos', err.message);
-      } else {
-        console.log('Base de datos cerrada');
-      }
-    });
+  db.close((err) => {
+    if (err) {
+      console.error('Error al cerrar la base de datos', err.message);
+    } else {
+      console.log('Base de datos cerrada');
+    }
+  });
 }
 
 export const insert = (db) => {
-    db.run('INSERT INTO requests VALUES (null, "url", "Juan", "none", 1)');
+  db.run('INSERT INTO requests VALUES (null, "url", "Juan", "none", 1)');
 }
 

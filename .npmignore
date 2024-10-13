@@ -11,3 +11,5 @@ utils
 tsconfig.json
 dbclean.sql
 *.dev.*
+*.tar.*
+*.tgz*
