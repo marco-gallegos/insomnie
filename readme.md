@@ -44,8 +44,10 @@ insomnie -u https://pokeapi.co/api/v2/
 # GET request
 insomnie -u https://pokeapi.co/api/v2/
 
+insomnie -u https://jsonplaceholder.typicode.com/posts/100
+
 # POST request
-WIP
+insomnie -u https://jsonplaceholder.typicode.com/posts/ -t post -B "{\"userId\": 22, \"title\":\"my task on CP\" }"
 ```
 
 ### Text User Interface

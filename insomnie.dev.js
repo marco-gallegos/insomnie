@@ -358,6 +358,10 @@ if (checkHealthFlow) {
   }
   process.exit(0);
 }
+if (cliParams.type === "gql") {
+  console.debug("Graphql is not implemented  :c (not yet 7u7)");
+  process.exit(0);
+}
 if (cliRequestFlow && !checkHealthFlow) {
   const requestData = {
     url: cliParams.url,
