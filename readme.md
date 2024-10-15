@@ -4,17 +4,53 @@ Insomnie is a lightweight CLI and TUI HTTP client for developers. Inspired by bi
 
 Insomnie is the french translation of insomnio (from the spanish) and is a kind of joke about the rest translation to the spanish (descansar).
 
+## Installation
+
+### requirements
+
+- node lts >= 20
+- npm bins path on your OS Path
+
+```shell
+npm i -g insomnie
+```
+
 ## Notes
 
-this is under active development and is not stable (but is usable) so is probable get some breaking changes in the future.
+This is under active development and is not stable (but is usable) so is probable
+get some breaking changes in the future.
 
-right now only this features are working :
+Right now only this features are working :
 
 - [x] CLI request using args config
 - [x] check healt to multiple paths using args config
 - [ ] Env variables from a local file
 - [ ] Env variables from a global file
 - [ ] CLI request using local file
+
+## Usage
+
+### On terminal
+
+just calling directly from your terminal.
+
+```shell
+insomnie --help # should display full cli help
+
+
+# check health (like a ping)
+insomnie -u https://pokeapi.co/api/v2/
+
+# GET request
+insomnie -u https://pokeapi.co/api/v2/
+
+# POST request
+WIP
+```
+
+### Text User Interface
+
+WIP
 
 ## Project Focuses
 
