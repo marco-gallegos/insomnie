@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### ⚙️ Miscellaneous Tasks
 
 - *(release)* Bin/bundle updated
+- *(cli)* Added cliff and excluded gql
 
 ## [1.1.1] - 2024-10-13
 

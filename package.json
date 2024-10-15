@@ -17,7 +17,8 @@
     "build:dev": "node build.mjs dev",
     "watch": "nodemon --exec 'npm run build:dev' -e ts,mjs,json --ignore insomnie.mjs",
     "migrate": "sqlite3 requests.db '.read dbstructure.sql'",
-    "cleandb": "sqlite3 requests.db '.read dbclean.sql'"
+    "cleandb": "sqlite3 requests.db '.read dbclean.sql'",
+    "changelog": "git cliff > changelog.md"
   },
   "bin": {
     "insomnie": "./insomnie.js"
