@@ -56,6 +56,7 @@ const generateFullUrls = (baseUrl: string, urlPaths: string): string[] => {
 };
 
 
+// 1: check health flow
 if (checkHealthFlow) {
   const fullPathUrls: string[] = generateFullUrls(cliParams.url, cliParams.urlpath);
   for (let i = 0; i < cliParams.tries; i++) {
@@ -65,6 +66,11 @@ if (checkHealthFlow) {
   process.exit(0);
 }
 
+// 2: cli request
+if (cliParams.type === 'gql') {
+  console.debug("Graphql is not implemented  :c (not yet 7u7)");
+  process.exit(0);
+}
 if (cliRequestFlow && !checkHealthFlow) {
   // Procesa los parámetros de URL y cabeceras
   const requestData = {
