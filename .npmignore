@@ -13,3 +13,4 @@ dbclean.sql
 *.dev.*
 *.tar.*
 *.tgz*
+*.toml

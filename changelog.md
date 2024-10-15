@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [1.1.3] - 2024-10-15
+
+### 📚 Documentation
+
+- *(package)* Updated npmignore and license
+
+## [1.1.2] - 2024-10-15
 
 ### 📚 Documentation
 
@@ -12,6 +18,8 @@ All notable changes to this project will be documented in this file.
 
 - *(release)* Bin/bundle updated
 - *(cli)* Added cliff and excluded gql
+- *(changelog)* Updated changelog
+- *(cli)* Prod version update
 
 ## [1.1.1] - 2024-10-13
 
