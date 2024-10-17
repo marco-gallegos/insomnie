@@ -18,7 +18,10 @@
     "watch": "nodemon --exec 'npm run build:dev' -e ts,mjs,json --ignore insomnie.mjs",
     "migrate": "sqlite3 requests.db '.read dbstructure.sql'",
     "cleandb": "sqlite3 requests.db '.read dbclean.sql'",
-    "changelog": "git cliff > changelog.md"
+    "changelog": "git cliff > changelog.md",
+    "docs:dev": "vitepress dev docs --host",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "bin": {
     "insomnie": "./insomnie.js"
@@ -51,6 +54,7 @@
     "@types/blessed": "^0.1.25",
     "@types/sqlite3": "^3.1.11",
     "esbuild": "^0.24.0",
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.7",
+    "vitepress": "^1.4.1"
   }
 }
