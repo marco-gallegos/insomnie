@@ -105,7 +105,7 @@ if (cliRequestFlow && !checkHealthFlow) {
 
     const consoleTable = new Table({
       head: [chalk.white('State'), chalk.white('Body')],
-      colWidths: [Math.floor(terminalWidth.columns * 0.4), Math.floor(terminalWidth.columns * 0.6)],
+      colWidths: [50, Math.floor(terminalWidth.columns - 53)],
     });
 
     const col1 = {
