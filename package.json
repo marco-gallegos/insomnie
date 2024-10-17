@@ -16,12 +16,13 @@
     "build": "node build.mjs prod",
     "build:dev": "node build.mjs dev",
     "watch": "nodemon --exec 'npm run build:dev' -e ts,mjs,json --ignore insomnie.mjs",
-    "migrate": "sqlite3 requests.db '.read dbstructure.sql'",
-    "cleandb": "sqlite3 requests.db '.read dbclean.sql'",
     "changelog": "git cliff > changelog.md",
+    "changelog:patch": "git cliff --bump patch > changelog.md",
+    "changelog:minor": "git cliff --bump minor > changelog.md",
     "docs:dev": "vitepress dev docs --host",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "release:docs": "node bin/generate_version.js && npm run docs:build && cp version.json docs/.vitepress/dist/"
   },
   "bin": {
     "insomnie": "./insomnie.js"
