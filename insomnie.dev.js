@@ -300,7 +300,6 @@ var requestController_default = requestController;
 // index.ts
 import chalk2 from "chalk";
 import Table2 from "cli-table3";
-import { stdout as terminalWidth } from "process";
 
 // utiils/index.ts
 import chalk from "chalk";
@@ -385,7 +384,7 @@ if (cliRequestFlow && !checkHealthFlow) {
     };
     const consoleTable = new Table2({
       head: [chalk2.white("State"), chalk2.white("Body")],
-      colWidths: [50, Math.floor(terminalWidth.columns - 53)]
+      colWidths: [80, 50]
     });
     const col1 = {
       url: requestData.url,
