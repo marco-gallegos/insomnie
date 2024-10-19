@@ -302,6 +302,69 @@ import chalk2 from "chalk";
 import Table2 from "cli-table3";
 import { stdout as terminalWidth } from "process";
 
+// package.json
+var package_default = {
+  name: "insomnie",
+  version: "1.1.4",
+  description: "insomnie is a rest client for the terminal (TUI) ",
+  type: "module",
+  main: "./insomnie.js",
+  module: "./insomnie.js",
+  private: false,
+  engines: {
+    node: ">=20",
+    npm: ">=10.7"
+  },
+  scripts: {
+    test: 'echo "Error: no test specified" && exit 1',
+    buildInline: "esbuild index.ts --bundle --platform=node --minify --packages=external --outfile=insomnie.js",
+    build: "node build.mjs prod",
+    "build:dev": "node build.mjs dev",
+    watch: "nodemon --exec 'npm run build:dev' -e ts,mjs,json --ignore insomnie.mjs",
+    changelog: "git cliff > changelog.md",
+    "changelog:patch": "git cliff --bump patch -o changelog.md",
+    "changelog:minor": "git cliff --bump minor -o changelog.md",
+    "docs:dev": "vitepress dev docs --host",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "release:docs": "node bin/generate_version.js && npm run docs:build && cp version.json docs/.vitepress/dist/"
+  },
+  bin: {
+    insomnie: "./insomnie.js"
+  },
+  keywords: [
+    "rest",
+    "rest client",
+    "tui",
+    "cli",
+    "http",
+    "client"
+  ],
+  author: "Marco A. Gallegos Loaeza",
+  license: "GPL-3.0-only",
+  repository: {
+    type: "git",
+    url: "git+https://github.com/marco-gallegos/insomnie"
+  },
+  homepage: "https://github.com/marco-gallegos/insomnie",
+  dependencies: {
+    axios: "^1.7.7",
+    blessed: "^0.1.81",
+    chalk: "^5.3.0",
+    "cli-table3": "^0.6.5",
+    commander: "^12.1.0",
+    figlet: "^1.7.0",
+    zustand: "^4.5.5"
+  },
+  devDependencies: {
+    "@types/blessed": "^0.1.25",
+    "@types/sqlite3": "^3.1.11",
+    esbuild: "^0.24.0",
+    nodemon: "^3.1.7",
+    vitepress: "^1.4.1"
+  }
+};
+
 // utiils/index.ts
 import chalk from "chalk";
 import Table from "cli-table3";
@@ -341,7 +404,7 @@ var checkHealth = async (fullPathUrls, tries) => {
 };
 
 // index.ts
-var cli = program.version("1.0.0").description("Una aplicaci\xF3n CLI simple para hacer peticiones http.").addOption(new Option("-chk, --check-health", "this enables check health mode to make a helth check on given urls.")).addOption(new Option("-tr, --tries <number>", "Max try number (on chk is how many times is executed).").default(10)).addOption(new Option("-u, --url <url>", "URL to hit, full parth or base url to work with  -up - url path")).addOption(new Option("-p, --urlpath <url>", "a single ppath or a csv list of url paths to hit (path is a url complement <request_url> = <url> + <path>)")).addOption(new Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new Option("-B, --body <body>", "Request body")).addOption(new Option("-t, --type <type>", "request type GET, POST, ...").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new Option("-rq, --request <id>", "request to execute")).addOption(new Option("-s, --save", "Save request.")).addOption(new Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new Option("-l, --list", "Show all requests according current space."));
+var cli = program.version(package_default.version).description("Una aplicaci\xF3n CLI simple para hacer peticiones http.").addOption(new Option("-chk, --check-health", "this enables check health mode to make a helth check on given urls.")).addOption(new Option("-tr, --tries <number>", "Max try number (on chk is how many times is executed).").default(10)).addOption(new Option("-u, --url <url>", "URL to hit, full parth or base url to work with  -up - url path")).addOption(new Option("-p, --urlpath <url>", "a single ppath or a csv list of url paths to hit (path is a url complement <request_url> = <url> + <path>)")).addOption(new Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new Option("-B, --body <body>", "Request body")).addOption(new Option("-t, --type <type>", "request type GET, POST, ...").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new Option("-rq, --request <id>", "request to execute")).addOption(new Option("-s, --save", "Save request.")).addOption(new Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new Option("-l, --list", "Show all requests according current space."));
 cli.parse(process.argv);
 var cliParams = cli.opts();
 var checkHealthFlow = cliParams.checkHealth ?? false;

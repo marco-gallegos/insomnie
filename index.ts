@@ -5,6 +5,7 @@ import requestController from '@/controller/requestController';
 import chalk from 'chalk';
 import Table from 'cli-table3';
 import { stdout as terminalWidth } from 'process';
+import packagejson from './package.json'
 
 // flows import 
 import { checkHealth } from "./utiils";
@@ -16,7 +17,7 @@ import { checkHealth } from "./utiils";
 //console.log("B =============================")
 
 const cli = program
-  .version('1.0.0')
+  .version(packagejson.version)
   .description('Una aplicación CLI simple para hacer peticiones http.')
   //.addOption(new Option('-d, --drink <size>', 'drink size').choices(['small', 'medium', 'large']).default('small', 'The small version.'))
   .addOption(new Option('-chk, --check-health', 'this enables check health mode to make a helth check on given urls.'))
