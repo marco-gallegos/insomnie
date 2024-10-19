@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.5] - 2024-10-19
+
+### 🐛 Bug Fixes
+
+- *(cli)* Version detection
+
+### ⚙️ Miscellaneous Tasks
+
+- *(cli)* Table width fixed considering table width
+- *(cli)* Updated version detection
+- *(cli)* Updated get versio to call update check
+
 ## [1.1.4] - 2024-10-19
 
 ### 🚀 Features
@@ -19,6 +31,7 @@ All notable changes to this project will be documented in this file.
 ### ⚙️ Miscellaneous Tasks
 
 - *(cli)* Width fix
+- *(changelog)* Updated version minor
 
 ## [1.1.3] - 2024-10-15
 
