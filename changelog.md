@@ -2,11 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.4] - 2024-10-19
+
+### 🚀 Features
+
+- *(cli)* Added docs with vitepress and version json generation
+
+### 🚜 Refactor
+
+- *(checkhealth)* Updated to get a better experience
+
+### 📚 Documentation
+
+- *(readme)* Some updates
+
+### ⚙️ Miscellaneous Tasks
+
+- *(cli)* Width fix
+
 ## [1.1.3] - 2024-10-15
 
 ### 📚 Documentation
 
 - *(package)* Updated npmignore and license
+
+### ⚙️ Miscellaneous Tasks
+
+- *(changelog)* Updated versions
 
 ## [1.1.2] - 2024-10-15
 
