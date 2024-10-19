@@ -4,6 +4,8 @@ import { Option, program } from "commander"
 import requestController from '@/controller/requestController';
 import chalk from 'chalk';
 import Table from 'cli-table3';
+import { stdout as terminalWidth } from 'process';
+
 // flows import 
 import { printTable } from "./utiils";
 
@@ -104,7 +106,7 @@ if (cliRequestFlow && !checkHealthFlow) {
 
     const consoleTable = new Table({
       head: [chalk.white('State'), chalk.white('Body')],
-      colWidths: [80, 50],
+      colWidths: [50, Math.floor(terminalWidth.columns - 53)]
     });
 
     const col1 = {
