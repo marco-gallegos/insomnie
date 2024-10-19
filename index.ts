@@ -16,7 +16,7 @@ import { getVersion } from '@/utils/version';
 //console.log("B =============================")
 
 const cli = program
-  .version(getVersion())
+  .version(getVersion(true))
   .description('A Simple terminal CLI and TUI local first http client for developers.')
   //.addOption(new Option('-d, --drink <size>', 'drink size').choices(['small', 'medium', 'large']).default('small', 'The small version.'))
   .addOption(new Option('-chk, --check-health', 'this enables check health mode to make a helth check on given urls.'))
