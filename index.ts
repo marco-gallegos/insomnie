@@ -4,8 +4,10 @@ import { Option, program } from "commander"
 import requestController from '@/controller/requestController';
 import chalk from 'chalk';
 import Table from 'cli-table3';
+import { stdout as terminalWidth } from 'process';
+
 // flows import 
-import { printTable } from "./utiils";
+import { checkHealth } from "./utiils";
 
 //console.log("A =============================")
 //const db = createDbConnection()
@@ -59,10 +61,14 @@ const generateFullUrls = (baseUrl: string, urlPaths: string): string[] => {
 // 1: check health flow
 if (checkHealthFlow) {
   const fullPathUrls: string[] = generateFullUrls(cliParams.url, cliParams.urlpath);
+  await checkHealth(fullPathUrls, cliParams.tries);
+  /**
+   *
   for (let i = 0; i < cliParams.tries; i++) {
     await printTable(fullPathUrls);
     await new Promise(resolve => setTimeout(resolve, 500));
   }
+  */
   process.exit(0);
 }
 
@@ -104,7 +110,7 @@ if (cliRequestFlow && !checkHealthFlow) {
 
     const consoleTable = new Table({
       head: [chalk.white('State'), chalk.white('Body')],
-      colWidths: [80, 50],
+      colWidths: [50, Math.floor(terminalWidth.columns - 53)]
     });
 
     const col1 = {

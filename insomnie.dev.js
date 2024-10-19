@@ -300,41 +300,44 @@ var requestController_default = requestController;
 // index.ts
 import chalk2 from "chalk";
 import Table2 from "cli-table3";
+import { stdout as terminalWidth } from "process";
 
 // utiils/index.ts
 import chalk from "chalk";
 import Table from "cli-table3";
-var fetchData = async (url) => {
-  try {
-    const response = await fetch(url);
-    return { url, status: response.status };
-  } catch (error) {
-    console.debug(error);
-    return { url, status: "Error" };
-  }
-};
-var printTable = async (urls) => {
-  let tableData = [];
-  for (let url of urls) {
-    tableData.push(await fetchData(url));
-  }
+var printTable = async (tableData) => {
   const table = new Table({
-    head: [chalk.white("URL"), chalk.white("Estado")],
-    colWidths: [80, 10]
+    head: [chalk.white("URL"), chalk.white("Status")],
+    colWidths: [80, 18]
   });
-  tableData.forEach((row) => {
-    let statusColor;
-    if (row.status === "Error") {
-      statusColor = chalk.red;
-    } else if (row.status >= 200 && row.status < 300) {
-      statusColor = chalk.green;
+  tableData.forEach(async (row, index) => {
+    if (row.status === "rejected") {
+      table.push([chalk.blue(index), chalk.red(row.status)]);
     } else {
-      statusColor = chalk.yellow;
+      let statusColor;
+      if (row.value.status === "Error") {
+        statusColor = chalk.red;
+      } else if (row.value.status >= 200 && row.value.status < 300) {
+        statusColor = chalk.green;
+      } else {
+        statusColor = chalk.yellow;
+      }
+      table.push([chalk.blue(row.value.url), statusColor(`${row.value.status} ${row.value.statusText}`)]);
     }
-    table.push([chalk.blue(row.url), statusColor(row.status)]);
   });
-  console.log("\n" + chalk.bold(`Peticiones a ${urls.length} URLs:`) + "\n");
+  console.log("\n" + chalk.bold(`Requesting ${tableData.length} URLs:`) + "\n");
   console.log(table.toString());
+};
+var checkHealth = async (fullPathUrls, tries) => {
+  for (let index = 0; index < tries; index++) {
+    let promises = [];
+    for (const path of fullPathUrls) {
+      promises.push(fetch(path));
+    }
+    ;
+    let responses = await Promise.allSettled(promises);
+    printTable(responses);
+  }
 };
 
 // index.ts
@@ -352,10 +355,7 @@ var generateFullUrls = (baseUrl, urlPaths) => {
 };
 if (checkHealthFlow) {
   const fullPathUrls = generateFullUrls(cliParams.url, cliParams.urlpath);
-  for (let i = 0; i < cliParams.tries; i++) {
-    await printTable(fullPathUrls);
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  }
+  await checkHealth(fullPathUrls, cliParams.tries);
   process.exit(0);
 }
 if (cliParams.type === "gql") {
@@ -384,7 +384,7 @@ if (cliRequestFlow && !checkHealthFlow) {
     };
     const consoleTable = new Table2({
       head: [chalk2.white("State"), chalk2.white("Body")],
-      colWidths: [80, 50]
+      colWidths: [50, Math.floor(terminalWidth.columns - 53)]
     });
     const col1 = {
       url: requestData.url,

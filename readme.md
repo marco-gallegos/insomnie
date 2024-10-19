@@ -27,6 +27,9 @@ Right now only this features are working :
 - [ ] Env variables from a local file
 - [ ] Env variables from a global file
 - [ ] CLI request using local file
+- [ ] TUI request
+- [ ] TUI request using envs
+- [ ] TUI request from a file
 
 ## Usage
 
@@ -39,7 +42,7 @@ insomnie --help # should display full cli help
 
 
 # check health (like a ping)
-insomnie -u https://pokeapi.co/api/v2/
+insomnie -u https://pokeapi.co/api/v2/ -chk
 
 # GET request
 insomnie -u https://pokeapi.co/api/v2/
@@ -47,7 +50,7 @@ insomnie -u https://pokeapi.co/api/v2/
 insomnie -u https://jsonplaceholder.typicode.com/posts/100
 
 # POST request
-insomnie -u https://jsonplaceholder.typicode.com/posts/ -t post -B "{\"userId\": 22, \"title\":\"my task on CP\" }"
+insomnie -u https://jsonplaceholder.typicode.com/posts/ -t post -B "{\"userId\": 22, \"title\":\"my task\" }"
 ```
 
 ### Text User Interface
@@ -60,13 +63,15 @@ WIP
 
 This project should be easy to read and to use i prefer something simple and lightweight rather than something complex and heavy even if this makes a bit less friendly the UX, im assuming this is used by professionals.
 
-if this is easy to read and use then is easy to fork and extend.
+If this is easy to read and use then is easy to fork and extend.
+
+Written on the most popular language to fit better.
 
 ### Cutting Edge
 
 Use latest (stable) technologies is a must so if you can improve something with a brand new feature or lib just open a issue explaining it.
 
-current tech stack:
+Current tech stack:
 
 - node >= 22
 - esbuild
@@ -102,7 +107,6 @@ ademas quiero incluir las siguientes caracteristicas
 
 - es un cli y tiene una tui
 - como cli quiero poder correr un conjunto de peticiones o todo el workspace/proyecto
-- el tui solo traabaja con una peticion
 - tanto en tui como en cli debo poder tener un historial segun la peticion
 - hotkeys para ejecutar las peticiones rapidas
 - el tui debe tener un api para poder solicitarle de forma externa que corra de forma automatica la peticion (eje cuando el back se reconstruya incluir un curl al final que le solicite al tui hacer fetch)
@@ -114,46 +118,46 @@ ademas quiero incluir las siguientes caracteristicas
 caracteristicas que veo posibles y seria cool tener pero no son esenciales
 
 - performance analisis tipo jmeter basado en multiples peticiones
-
-requisitos o limitaciones tecnicas
-
-- usar alguna sql like db
-- pensar en la reusabilidad
-- debo poder sustituir la db que se usa
-
-#### MVP
-
-the tui works without the cli with local config saving.
-
-- tui can make requests and show the result
-- tui can save and load requests
-- tui works per project
-- the code is easy to extend
+- cambiar el request engine
+  - por ahora usa js pero poder cambiar a un engine escrito en java, go o rust puede traenornos nuevas ventajas
 
 ## Road Map
 
-- [x] cli boot
-  - [x] cli can boots the tui
-    - [x] works on linux
-    - [x] npm project
-    - [x] npm project works using npm i -g
-- [ ] configuration basics cli first steps
-  - [x] is possible store using sqlite
-  - [x] cli boots tui only if no other command is provided
-  - [x] define tables to store requests
-  - [ ] CRUD for requests working on cli
-  - [ ] is posible store project url (url is base url then every url should have a path execute url is url + path)
-  - [x] define all supported headers for api -> defined a generic way
-- [ ] tui 1st step
-  - [ ] can make a request without store
-  - [ ] can store current request
-  - [ ] can store url and path
-  - [ ] can recover a stored request
-    - [ ] menu to show stored requests
+- clean the mess
+  - i just released ASAP v1 and is not clean enough, lets clean this :D
+- cli output fix
+  - table is heavy lets send body as json simple log
+  - automatic table width using terminal size or a param
+- cli file read
+  - env current dir file
+  - json payloads
+  - full request using file (in current dir)
+- quick integrations
+  - json hero <https://github.com/triggerdotdev/jsonhero-web>
+- make TUI work
+  - simple tui request
+- reading from file
+
+### not documented nice to have (looking very possible)
+
+- jq looks good integration
+- json crack
+- pack request
+  - a packed request is a "compiled" standalone request json file to just send to a friend and reproduce request
+
+## How should work
+
+```mermaid
+---
+title: How Should Work
+---
+flowchart TD
+    clicall[terminal cli call] --> modeselection{args analisis}
+```
 
 ## Notes
 
-### sqlite
+### Sqlite
 
 i removed sqlite because is hard to compile is some non common environmnets (pythopn  distutils in python >3.11 and node gyp)
 
