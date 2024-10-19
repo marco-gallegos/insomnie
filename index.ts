@@ -5,10 +5,9 @@ import requestController from '@/controller/requestController';
 import chalk from 'chalk';
 import Table from 'cli-table3';
 import { stdout as terminalWidth } from 'process';
-import packagejson from './package.json'
-
 // flows import 
-import { checkHealth } from "./utiils";
+import { checkHealth } from '@/utils';
+import { getVersion } from '@/utils/version';
 
 //console.log("A =============================")
 //const db = createDbConnection()
@@ -17,8 +16,8 @@ import { checkHealth } from "./utiils";
 //console.log("B =============================")
 
 const cli = program
-  .version(packagejson.version)
-  .description('Una aplicación CLI simple para hacer peticiones http.')
+  .version(getVersion())
+  .description('A Simple terminal CLI and TUI local first http client for developers.')
   //.addOption(new Option('-d, --drink <size>', 'drink size').choices(['small', 'medium', 'large']).default('small', 'The small version.'))
   .addOption(new Option('-chk, --check-health', 'this enables check health mode to make a helth check on given urls.'))
   .addOption(new Option('-tr, --tries <number>', 'Max try number (on chk is how many times is executed).').default(10))
