@@ -1,3 +1,9 @@
+
+# vitepress stuff
+docs/.vitepress/cache
+docs/.vitepress/build
+
+
 *.db
 *.ignore.*
 # Logs
