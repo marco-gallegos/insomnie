@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.1.5] - 2024-10-19
+## [1.2.0] - 2024-10-20
 
 ### 🐛 Bug Fixes
 
@@ -13,6 +13,11 @@ All notable changes to this project will be documented in this file.
 - *(cli)* Table width fixed considering table width
 - *(cli)* Updated version detection
 - *(cli)* Updated get versio to call update check
+- *(changelog)* Version update
+- *(cli)* Prod build updated
+- *(cli!)* Removed axios and refactored some parts
+- *(repo)* Removed sql and npmignore update
+- *(cli)* Removed axios and refactored some parts
 
 ## [1.1.4] - 2024-10-19
 
