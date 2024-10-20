@@ -264,11 +264,7 @@ Etiam eu rutrum nunc, a eleifend ante. Fusce pharetra purus nec ex placerat phar
   }
 });
 
-// index.ts
-import { Option, program } from "commander";
-
 // controller/requestController.ts
-import axios from "axios";
 var requestController = {
   call: async (requestData) => {
     console.debug("calling api");
@@ -276,17 +272,12 @@ var requestController = {
       data: null
     };
     let error = null;
-    try {
-      response = await axios({
-        method: requestData.type,
-        url: requestData.url
-        // headers: requestData.headers,
-        // data: requestData.body
-      });
-    } catch (err) {
-      error = err;
-    }
-    return { response, error };
+    response = fetch(requestData.url, {
+      method: requestData.type
+      // headers: requestData.headers,
+      // data: requestData.body
+    });
+    return response;
   },
   save: () => {
     return "save";
@@ -340,6 +331,9 @@ var checkHealth = async (fullPathUrls, tries) => {
   }
 };
 
+// utils/cli.ts
+import { Option, program } from "commander";
+
 // package.json
 var package_default = {
   name: "insomnie",
@@ -386,17 +380,15 @@ var package_default = {
   },
   homepage: "https://github.com/marco-gallegos/insomnie",
   dependencies: {
-    axios: "^1.7.7",
     blessed: "^0.1.81",
     chalk: "^5.3.0",
     "cli-table3": "^0.6.5",
     commander: "^12.1.0",
-    figlet: "^1.7.0",
-    zustand: "^4.5.5"
+    figlet: "^1.8.0",
+    zustand: "^5.0.0"
   },
   devDependencies: {
     "@types/blessed": "^0.1.25",
-    "@types/sqlite3": "^3.1.11",
     esbuild: "^0.24.0",
     nodemon: "^3.1.7",
     vitepress: "^1.4.1"
@@ -410,12 +402,13 @@ var getVersion = (checkUpdates = false) => {
   return package_default.version;
 };
 
-// index.ts
-var cli = program.version(getVersion(true)).description("A Simple terminal CLI and TUI local first http client for developers.").addOption(new Option("-chk, --check-health", "this enables check health mode to make a helth check on given urls.")).addOption(new Option("-tr, --tries <number>", "Max try number (on chk is how many times is executed).").default(10)).addOption(new Option("-u, --url <url>", "URL to hit, full parth or base url to work with  -up - url path")).addOption(new Option("-p, --urlpath <url>", "a single ppath or a csv list of url paths to hit (path is a url complement <request_url> = <url> + <path>)")).addOption(new Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new Option("-B, --body <body>", "Request body")).addOption(new Option("-t, --type <type>", "request type GET, POST, ...").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new Option("-rq, --request <id>", "request to execute")).addOption(new Option("-s, --save", "Save request.")).addOption(new Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new Option("-l, --list", "Show all requests according current space."));
-cli.parse(process.argv);
-var cliParams = cli.opts();
-var checkHealthFlow = cliParams.checkHealth ?? false;
-var cliRequestFlow = process.argv.length > 2;
+// utils/cli.ts
+var getCliProgram = (args) => {
+  const cli2 = program.version(getVersion(true)).description("A Simple terminal CLI and TUI local first http client for developers.").addOption(new Option("-chk, --check-health", "this enables check health mode to make a helth check on given urls.")).addOption(new Option("-tr, --tries <number>", "Max try number (on chk is how many times is executed).").default(10)).addOption(new Option("-u, --url <url>", "URL to hit, full parth or base url to work with  -up - url path")).addOption(new Option("-p, --urlpath <url>", "a single ppath or a csv list of url paths to hit (path is a url complement <request_url> = <url> + <path>)")).addOption(new Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new Option("-B, --body <body>", "Request body")).addOption(new Option("-t, --type <type>", "request type GET, POST, ...").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new Option("-rq, --request <id>", "request to execute")).addOption(new Option("-s, --save", "Save request.")).addOption(new Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new Option("-l, --list", "Show all requests according current space."));
+  return cli2.parse(args);
+};
+
+// utils/requests.ts
 var generateFullUrls = (baseUrl, urlPaths) => {
   if (!urlPaths) {
     return [baseUrl];
@@ -423,13 +416,34 @@ var generateFullUrls = (baseUrl, urlPaths) => {
   const paths = urlPaths.split(",").map((path) => path.trim());
   return paths.map((path) => `${baseUrl}${path}`);
 };
+var parseHeaders = (headers) => {
+  let parsedHeaders = {
+    isJson: false,
+    isXml: false,
+    isHtml: false,
+    isText: false,
+    isBinary: false
+  };
+  const contentType = headers.get("content-type");
+  parsedHeaders.isJson = contentType?.includes("json");
+  parsedHeaders.isXml = contentType?.includes("xml");
+  parsedHeaders.isHtml = contentType?.includes("html");
+  parsedHeaders.isText = contentType?.includes("text");
+  return parsedHeaders;
+};
+
+// index.ts
+var cli = getCliProgram(process.argv);
+var cliParams = cli.opts();
+var checkHealthFlow = cliParams.checkHealth ?? false;
+var cliRequestFlow = process.argv.length > 2;
+if (cliParams.type === "gql") {
+  console.debug("Graphql is not implemented  :c (not yet 7u7)");
+  process.exit(0);
+}
 if (checkHealthFlow) {
   const fullPathUrls = generateFullUrls(cliParams.url, cliParams.urlpath);
   await checkHealth(fullPathUrls, cliParams.tries);
-  process.exit(0);
-}
-if (cliParams.type === "gql") {
-  console.debug("Graphql is not implemented  :c (not yet 7u7)");
   process.exit(0);
 }
 if (cliRequestFlow && !checkHealthFlow) {
@@ -439,35 +453,49 @@ if (cliRequestFlow && !checkHealthFlow) {
     headers: cliParams.headers ? JSON.parse(cliParams.headers) : {},
     body: cliParams.body ? JSON.parse(cliParams.body) : {}
   };
-  const requestManagementFlags = {
-    save: !!cliParams.save ? true : false
+  let response = null;
+  let requestError = null;
+  try {
+    response = await requestController_default.call(requestData);
+  } catch (error) {
+    requestError = error;
+  }
+  if (requestError !== null) {
+    console.log("Error Calling API", requestError);
+    process.exit(1);
+  }
+  console.log("parsing response data ...");
+  let responseData = null;
+  const headers = parseHeaders(response.headers);
+  if (headers.isJson) {
+    responseData = await response.json();
+  }
+  if (headers.isHtml || headers.isXml || headers.isText) {
+    responseData = await response.text();
+  }
+  console.log("printing response data ...");
+  const data = {
+    status: response.status,
+    data: responseData
   };
-  const requestPromise = requestController_default.call(requestData);
-  requestPromise.then((response) => {
-    const responseData = response.response?.data ? response.response.data : response.error?.response?.data;
-    const data = {
-      status: response.error ? response.error.status : response.response?.status,
-      data: responseData?.length > 500 ? responseData.slice(0, 500) + "..." : responseData,
-      // error: response.error,
-      errorMessage: response.error?.message,
-      errorStatus: response.error?.status
-    };
-    const consoleTable = new Table2({
-      head: [chalk2.white("State"), chalk2.white("Body")],
-      colWidths: [50, Math.floor(terminalWidth.columns - 53)]
-    });
-    const col1 = {
-      url: requestData.url,
-      status: data.status,
-      errorMessage: data.errorMessage,
-      errorStatus: data.errorStatus
-    };
-    consoleTable.push([JSON.stringify(col1, null, 1), JSON.stringify(data.data, null, 1)]);
-    console.log(consoleTable.toString());
-  }).catch((error) => {
+  const consoleTable = new Table2({
+    style: { border: [], header: [] },
+    head: [chalk2.white("State")],
+    wordWrap: true,
+    // colWidths: [50, Math.floor(terminalWidth.columns - 53)],
+    colWidths: [terminalWidth.columns < 50 ? 50 : Math.floor(terminalWidth.columns / 2)]
   });
+  const col1 = {
+    url: requestData.url,
+    status: data.status
+  };
+  consoleTable.push([JSON.stringify(col1, null, 1)]);
+  console.log(consoleTable.toString());
+  console.log(chalk2.yellow("Response Body:"));
+  console.log(JSON.stringify(data.data, null, 1));
 } else {
   const ui = (init_ui(), __toCommonJS(ui_exports));
   console.log("Rendering ================>");
   ui.renderui();
+  process.exit(0);
 }

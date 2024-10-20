@@ -1,5 +1,4 @@
 import type { IController } from '@/controller';
-import axios from 'axios';
 
 import type { IRequestData } from '@/types';
 
@@ -12,18 +11,13 @@ const requestController: IController = {
         };
         let error:object|null = null;
 
-        try {
-            response = await axios({
-                method: requestData.type,
-                url: requestData.url,
-                // headers: requestData.headers,
-                // data: requestData.body
-            })
-        } catch (err) {
-            error = err;
-        }
+        response = fetch(requestData.url, {
+            method: requestData.type,
+            // headers: requestData.headers,
+            // data: requestData.body
+        })
 
-        return {response, error};
+        return response;
     },
     save: () => {
         return "save"
