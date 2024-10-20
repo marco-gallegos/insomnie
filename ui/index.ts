@@ -1,5 +1,4 @@
 import blessed from "blessed"
-import axios from "axios"
 
 //const dropdown = blessed.list({
     //parent: screen,
