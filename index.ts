@@ -58,7 +58,7 @@ if (cliRequestFlow && !checkHealthFlow) {
   // extracct states from api response if this is not null
   let responseData = null;
 
-  const headers:any = parseHeaders(response.headers);
+  const headers: any = parseHeaders(response.headers);
 
   if (headers.isJson) {
     // responseData = 'json';
@@ -81,7 +81,7 @@ if (cliRequestFlow && !checkHealthFlow) {
     head: [chalk.white('State')],
     wordWrap: true,
     // colWidths: [50, Math.floor(terminalWidth.columns - 53)],
-    colWidths: [terminalWidth.columns < 50 ? 50 : Math.floor(terminalWidth.columns/2)],
+    colWidths: [terminalWidth.columns < 50 ? 50 : Math.floor(terminalWidth.columns / 2)],
   });
 
   const col1 = {
@@ -90,7 +90,7 @@ if (cliRequestFlow && !checkHealthFlow) {
   }
 
   consoleTable.push([JSON.stringify(col1, null, 1)]);
-  
+
   console.log(consoleTable.toString());
   console.log(chalk.yellow('Response Body:'));
   console.log(JSON.stringify(data.data, null, 1));
@@ -99,6 +99,6 @@ if (cliRequestFlow && !checkHealthFlow) {
   const ui = require("./ui");
   console.log("Rendering ================>");
   ui.renderui();
-  process.exit(0);
+  //process.exit(0);
 }
 

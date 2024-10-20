@@ -497,5 +497,4 @@ if (cliRequestFlow && !checkHealthFlow) {
   const ui = (init_ui(), __toCommonJS(ui_exports));
   console.log("Rendering ================>");
   ui.renderui();
-  process.exit(0);
 }
