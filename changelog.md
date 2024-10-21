@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2024-10-21
+
+### 🐛 Bug Fixes
+
+- *(cli)* Tui crashing
+- *(cli)* Headers and body now working
+
+### ⚙️ Miscellaneous Tasks
+
+- *(cli)* Builds update
+
 ## [1.2.0] - 2024-10-20
 
 ### 🐛 Bug Fixes
@@ -18,6 +29,7 @@ All notable changes to this project will be documented in this file.
 - *(cli!)* Removed axios and refactored some parts
 - *(repo)* Removed sql and npmignore update
 - *(cli)* Removed axios and refactored some parts
+- *(cli)* Version update
 
 ## [1.1.4] - 2024-10-19
 

@@ -30,6 +30,23 @@ if (checkHealthFlow) {
   process.exit(0);
 }
 
+// TODO: using json by default but i need support another types
+let requestHeaders = {
+  'content-type': 'application/json'
+}
+
+try {
+  const headersFromCli = JSON.parse(cliParams.headers)
+  requestHeaders = { ...requestHeaders, ...headersFromCli }
+} catch (error) {
+  console.debug('Invalid Request Headers On Cli Params.')
+}
+
+let requestBody = null;
+if (cliParams.body !== undefined) {
+  requestBody = JSON.parse(cliParams.body);
+}
+
 // 2: cli request
 if (cliRequestFlow && !checkHealthFlow) {
   // Procesa los parámetros de URL y cabeceras
@@ -37,8 +54,8 @@ if (cliRequestFlow && !checkHealthFlow) {
     url: cliParams.url,
 
     type: cliParams.type,
-    headers: cliParams.headers ? JSON.parse(cliParams.headers) : {},
-    body: cliParams.body ? JSON.parse(cliParams.body) : {},
+    headers: requestHeaders,
+    body: requestBody,
   }
 
   let response = null;
@@ -54,11 +71,11 @@ if (cliRequestFlow && !checkHealthFlow) {
     process.exit(1);
   }
 
-  console.log('parsing response data ...')
+  console.log('Parsing Response Data ...')
   // extracct states from api response if this is not null
   let responseData = null;
 
-  const headers:any = parseHeaders(response.headers);
+  const headers: any = parseHeaders(response.headers);
 
   if (headers.isJson) {
     // responseData = 'json';
@@ -69,10 +86,11 @@ if (cliRequestFlow && !checkHealthFlow) {
     responseData = await response.text();
   }
 
-  console.log('printing response data ...')
+  console.log('Printing Response Data ...')
 
   const data = {
     status: response.status,
+    stausText: response.stausText,
     data: responseData,
   };
 
@@ -81,16 +99,16 @@ if (cliRequestFlow && !checkHealthFlow) {
     head: [chalk.white('State')],
     wordWrap: true,
     // colWidths: [50, Math.floor(terminalWidth.columns - 53)],
-    colWidths: [terminalWidth.columns < 50 ? 50 : Math.floor(terminalWidth.columns/2)],
+    colWidths: [terminalWidth.columns < 50 ? 50 : Math.floor(terminalWidth.columns / 2)],
   });
 
   const col1 = {
     url: requestData.url,
-    status: data.status,
+    status: `${data.status} ${data.stausText}`,
   }
 
   consoleTable.push([JSON.stringify(col1, null, 1)]);
-  
+
   console.log(consoleTable.toString());
   console.log(chalk.yellow('Response Body:'));
   console.log(JSON.stringify(data.data, null, 1));
@@ -99,6 +117,6 @@ if (cliRequestFlow && !checkHealthFlow) {
   const ui = require("./ui");
   console.log("Rendering ================>");
   ui.renderui();
-  process.exit(0);
+  //process.exit(0);
 }
 
