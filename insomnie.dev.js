@@ -343,7 +343,7 @@ import { Option, program } from "commander";
 // package.json
 var package_default = {
   name: "insomnie",
-  version: "1.2.0",
+  version: "1.2.1",
   description: "insomnie is a rest client for the terminal (TUI) ",
   type: "module",
   main: "./insomnie.js",
