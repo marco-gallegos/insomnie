@@ -267,16 +267,22 @@ Etiam eu rutrum nunc, a eleifend ante. Fusce pharetra purus nec ex placerat phar
 // controller/requestController.ts
 var requestController = {
   call: async (requestData) => {
-    console.debug("calling api");
+    console.debug("Calling API");
     let response = {
       data: null
     };
-    let error = null;
-    response = fetch(requestData.url, {
+    let requestConfig = {
       method: requestData.type
       // headers: requestData.headers,
-      // data: requestData.body
-    });
+      // body: requestData.body
+    };
+    if (requestData.headers) {
+      requestConfig.headers = requestData.headers;
+    }
+    if (requestData.body) {
+      requestConfig.body = JSON.stringify(requestData.body);
+    }
+    response = fetch(requestData.url, requestConfig);
     return response;
   },
   save: () => {
@@ -404,7 +410,7 @@ var getVersion = (checkUpdates = false) => {
 
 // utils/cli.ts
 var getCliProgram = (args) => {
-  const cli2 = program.version(getVersion(true)).description("A Simple terminal CLI and TUI local first http client for developers.").addOption(new Option("-chk, --check-health", "this enables check health mode to make a helth check on given urls.")).addOption(new Option("-tr, --tries <number>", "Max try number (on chk is how many times is executed).").default(10)).addOption(new Option("-u, --url <url>", "URL to hit, full parth or base url to work with  -up - url path")).addOption(new Option("-p, --urlpath <url>", "a single ppath or a csv list of url paths to hit (path is a url complement <request_url> = <url> + <path>)")).addOption(new Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new Option("-B, --body <body>", "Request body")).addOption(new Option("-t, --type <type>", "request type GET, POST, ...").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new Option("-rq, --request <id>", "request to execute")).addOption(new Option("-s, --save", "Save request.")).addOption(new Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new Option("-l, --list", "Show all requests according current space."));
+  const cli2 = program.version(getVersion(true)).description("A Simple terminal CLI and TUI local first http client for developers.").addOption(new Option("-chk, --check-health", "this enables check health mode to make a helth check on given urls.")).addOption(new Option("-tr, --tries <number>", "Max try number (on chk is how many times is executed).").default(10)).addOption(new Option("-u, --url <url>", "URL to hit, full parth or base url to work with  -up - url path")).addOption(new Option("-p, --urlpath <url>", "a single ppath or a csv list of url paths to hit (path is a url complement <request_url> = <url> + <path>)")).addOption(new Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new Option("-B, --body <body>", "Request body")).addOption(new Option("-t, --type <type>", "request type GET, POST, ...").default("get").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new Option("-rq, --request <id>", "request to execute")).addOption(new Option("-s, --save", "Save request.")).addOption(new Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new Option("-l, --list", "Show all requests according current space."));
   return cli2.parse(args);
 };
 
@@ -446,12 +452,25 @@ if (checkHealthFlow) {
   await checkHealth(fullPathUrls, cliParams.tries);
   process.exit(0);
 }
+var requestHeaders = {
+  "content-type": "application/json"
+};
+try {
+  const headersFromCli = JSON.parse(cliParams.headers);
+  requestHeaders = { ...requestHeaders, ...headersFromCli };
+} catch (error) {
+  console.debug("Invalid Request Headers On Cli Params.");
+}
+var requestBody = null;
+if (cliParams.body !== void 0) {
+  requestBody = JSON.parse(cliParams.body);
+}
 if (cliRequestFlow && !checkHealthFlow) {
   const requestData = {
     url: cliParams.url,
     type: cliParams.type,
-    headers: cliParams.headers ? JSON.parse(cliParams.headers) : {},
-    body: cliParams.body ? JSON.parse(cliParams.body) : {}
+    headers: requestHeaders,
+    body: requestBody
   };
   let response = null;
   let requestError = null;
@@ -464,7 +483,7 @@ if (cliRequestFlow && !checkHealthFlow) {
     console.log("Error Calling API", requestError);
     process.exit(1);
   }
-  console.log("parsing response data ...");
+  console.log("Parsing Response Data ...");
   let responseData = null;
   const headers = parseHeaders(response.headers);
   if (headers.isJson) {
@@ -473,9 +492,10 @@ if (cliRequestFlow && !checkHealthFlow) {
   if (headers.isHtml || headers.isXml || headers.isText) {
     responseData = await response.text();
   }
-  console.log("printing response data ...");
+  console.log("Printing Response Data ...");
   const data = {
     status: response.status,
+    stausText: response.stausText,
     data: responseData
   };
   const consoleTable = new Table2({
@@ -487,7 +507,7 @@ if (cliRequestFlow && !checkHealthFlow) {
   });
   const col1 = {
     url: requestData.url,
-    status: data.status
+    status: `${data.status} ${data.stausText}`
   };
   consoleTable.push([JSON.stringify(col1, null, 1)]);
   console.log(consoleTable.toString());
