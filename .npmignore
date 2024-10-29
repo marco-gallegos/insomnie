@@ -16,3 +16,5 @@ dbclean.sql
 *.toml
 bin
 docs
+**/env.json
+httpclient/*

@@ -410,7 +410,7 @@ var getVersion = (checkUpdates = false) => {
 
 // utils/cli.ts
 var getCliProgram = (args) => {
-  const cli2 = program.version(getVersion(true)).description("A Simple terminal CLI and TUI local first http client for developers.").addOption(new Option("-chk, --check-health", "this enables check health mode to make a helth check on given urls.")).addOption(new Option("-tr, --tries <number>", "Max try number (on chk is how many times is executed).").default(10)).addOption(new Option("-u, --url <url>", "URL to hit, full parth or base url to work with  -up - url path")).addOption(new Option("-p, --urlpath <url>", "a single ppath or a csv list of url paths to hit (path is a url complement <request_url> = <url> + <path>)")).addOption(new Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new Option("-B, --body <body>", "Request body")).addOption(new Option("-t, --type <type>", "request type GET, POST, ...").default("get").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new Option("-rq, --request <id>", "request to execute")).addOption(new Option("-s, --save", "Save request.")).addOption(new Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new Option("-l, --list", "Show all requests according current space."));
+  const cli2 = program.version(getVersion(true)).description("A Simple terminal CLI and TUI local first http client for developers.").addOption(new Option("-chk, --check-health", "this enables check health mode to make a helth check on given urls.")).addOption(new Option("-tr, --tries <number>", "Max try number (on chk is how many times is executed).").default(10)).addOption(new Option("-u, --url <url>", "URL to hit, full parth or base url to work with  -up - url path")).addOption(new Option("-p, --urlpath <url>", "a single ppath or a csv list of url paths to hit (path is a url complement <request_url> = <url> + <path>)")).addOption(new Option("-H, --headers <headers>", "Headers in JSON format")).addOption(new Option("-B, --body <body>", "Request body")).addOption(new Option("-t, --type <type>", "request type GET, POST, ...").default("get").choices(["get", "post", "put", "delete", "patch", "gql"])).addOption(new Option("-rq, --request <id>", "request to execute")).addOption(new Option("-s, --save", "Save request.")).addOption(new Option("-d, --delete <id>", "Delete the request with id:<id>")).addOption(new Option("-v, --view <id>", "Show all datails freom the request with id:<id>")).addOption(new Option("-l, --list", "Show all requests according current space.")).addOption(new Option("-dbg, --debuglevel <level>", "Set debug verbosity level.").default("info").choices(["silent", "info", "verbose", "debug"])).addOption(new Option("-iev, --initenv", "Start a new environment file on current directory using a default template (not required, just a tool).")).addOption(new Option("-ev, --env <name>", "Set environment name to use.").default("default")).addOption(new Option("-evfile, --envfile <filepath>", "Set environment file to use, by default ./httpclient/env.json.").default("./httpclient/env.json"));
   return cli2.parse(args);
 };
 
@@ -438,9 +438,74 @@ var parseHeaders = (headers) => {
   return parsedHeaders;
 };
 
+// utils/fileread.ts
+import { existsSync, readFileSync } from "fs";
+
+// utils/logger.ts
+var logger = (message, level = 1 /* Info */, currentLevel = 1 /* Info */, context) => {
+  if (level <= currentLevel) {
+    const error = new Error();
+    const [_, file, line] = error.stack.split("\n")[2].split(/[:\s]+/);
+    let formattedMessage = `[${file}:${line}] ${message}`;
+    if (context && level >= 2 /* Verbose */) {
+      const tableData = Object.entries(context).map(([key, value]) => [key, value]);
+      console.table(tableData);
+    }
+    if (level === 3 /* Debug */) {
+      console.debug(formattedMessage);
+    } else if (level === 2 /* Verbose */) {
+      console.info(formattedMessage);
+    } else if (level === 1 /* Info */) {
+      console.info(formattedMessage);
+    } else if (level === 0 /* Silent */) {
+    }
+  }
+};
+
+// utils/fileread.ts
+function loadJsonInput(input, config) {
+  let requestFile = null;
+  try {
+    requestFile = JSON.parse(input);
+    logger("parsed as string", 2 /* Verbose */, config.currentLogLevel);
+  } catch (error) {
+    if (input.endsWith(".json") && existsSync(input)) {
+      logger(`parsing as a file: ${input}`);
+      try {
+        const fileContent = readFileSync(input, "utf-8");
+        if (fileContent.includes("<script>") || fileContent.includes("eval(")) {
+          console.error("Potential JavaScript injection detected in file:", input);
+          return null;
+        }
+        requestFile = JSON.parse(fileContent);
+      } catch (error2) {
+        console.error("Error loading or parsing JSON file:", input, error2);
+      }
+    } else {
+      console.error("Invalid input: Not a JSON string or a valid JSON file.");
+    }
+  }
+  return requestFile;
+}
+
 // index.ts
+var getLogLevel = (debuglevel) => {
+  switch (debuglevel) {
+    case "silent":
+      return 0 /* Silent */;
+    case "info":
+      return 1 /* Info */;
+    case "verbose":
+      return 2 /* Verbose */;
+    case "debug":
+      return 3 /* Debug */;
+  }
+};
 var cli = getCliProgram(process.argv);
 var cliParams = cli.opts();
+var appConfiguration = {
+  currentLogLevel: getLogLevel(cliParams.debuglevel)
+};
 var checkHealthFlow = cliParams.checkHealth ?? false;
 var cliRequestFlow = process.argv.length > 2;
 if (cliParams.type === "gql") {
@@ -456,8 +521,10 @@ var requestHeaders = {
   "content-type": "application/json"
 };
 try {
-  const headersFromCli = JSON.parse(cliParams.headers);
+  const headersFromCli = loadJsonInput(cliParams.headers, appConfiguration);
   requestHeaders = { ...requestHeaders, ...headersFromCli };
+  logger("parsed headers.", 2 /* Verbose */, appConfiguration.currentLogLevel);
+  logger(JSON.stringify(requestHeaders), 2 /* Verbose */, appConfiguration.currentLogLevel);
 } catch (error) {
   console.debug("Invalid Request Headers On Cli Params.");
 }

@@ -8,9 +8,28 @@ import { stdout as terminalWidth } from 'process';
 import { checkHealth } from '@/utils';
 import { getCliProgram } from '@/utils/cli';
 import { generateFullUrls, parseHeaders } from './utils/requests';
+import { EDebugLevel, IAppConfiguration, ICliOptions } from './types';
+import { loadJsonInput } from './utils/fileread';
+import { logger } from './utils/logger';
+
+const getLogLevel = (debuglevel:string) => {
+  switch (debuglevel) {
+    case 'silent':
+      return EDebugLevel.Silent;
+    case 'info':
+      return EDebugLevel.Info;
+    case 'verbose':
+      return EDebugLevel.Verbose;
+    case 'debug':
+      return EDebugLevel.Debug;
+  }
+};
 
 const cli = getCliProgram(process.argv);
-const cliParams = cli.opts()
+const cliParams:ICliOptions = cli.opts()
+const appConfiguration:IAppConfiguration = {
+  currentLogLevel: getLogLevel(cliParams.debuglevel)
+}
 
 const checkHealthFlow: boolean = cliParams.checkHealth ?? false;
 // Comprueba si no se proporcionaron parámetros 2 because 0 => node, 1 => scriptname (insomnie.js)
@@ -36,8 +55,12 @@ let requestHeaders = {
 }
 
 try {
-  const headersFromCli = JSON.parse(cliParams.headers)
+  // const headersFromCli = JSON.parse(cliParams.headers)
+  const headersFromCli = loadJsonInput(cliParams.headers, appConfiguration)
   requestHeaders = { ...requestHeaders, ...headersFromCli }
+  
+  logger('parsed headers.', EDebugLevel.Verbose, appConfiguration.currentLogLevel)
+  logger(JSON.stringify(requestHeaders) , EDebugLevel.Verbose, appConfiguration.currentLogLevel)
 } catch (error) {
   console.debug('Invalid Request Headers On Cli Params.')
 }

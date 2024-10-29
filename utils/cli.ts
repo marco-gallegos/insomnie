@@ -17,7 +17,11 @@ export const getCliProgram = (args: any) => {
     .addOption(new Option('-s, --save', 'Save request.'))
     .addOption(new Option('-d, --delete <id>', 'Delete the request with id:<id>'))
     .addOption(new Option('-v, --view <id>', 'Show all datails freom the request with id:<id>'))
-    .addOption(new Option('-l, --list', 'Show all requests according current space.'));
-
+    .addOption(new Option('-l, --list', 'Show all requests according current space.'))
+    .addOption(new Option('-dbg, --debuglevel <level>', 'Set debug verbosity level.').default('info').choices(['silent', 'info', 'verbose', 'debug'])) // silent, info, verbose, debug
+    .addOption(new Option('-iev, --initenv', 'Start a new environment file on current directory using a default template (not required, just a tool).'))
+    .addOption(new Option('-ev, --env <name>', 'Set environment name to use.').default('default'))
+    .addOption(new Option('-evfile, --envfile <filepath>', 'Set environment file to use, by default ./httpclient/env.json.').default('./httpclient/env.json'));
+  
   return cli.parse(args);
 }

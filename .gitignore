@@ -1,3 +1,5 @@
+**/env.json
+httpclient/*
 
 # vitepress stuff
 docs/.vitepress/cache
