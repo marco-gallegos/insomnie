@@ -15,17 +15,37 @@ Insomnie is the french translation of insomnio (from the spanish) and is a kind 
 npm i -g insomnie
 ```
 
+## Some Related and interesting projects
+
+- [Json viewer on esteroids - JSON Hero](https://jsonhero.io/)
+- [Json processor - jq](https://jqlang.github.io/jq/)
+- [fuzzy finder on the terminal - fzf](https://github.com/junegunn/fzf)
+- [convert your terminal on your editor - neovim](https://neovim.io/)
+- [convert neovim on a vscode killer in a simple comand - lazyvim](https://www.lazyvim.org/)
+- [convert any terminal on a amazing tool - byobu](https://www.byobu.org/)
+- [edit a file doesnt requires a interaction - sed](https://www.linuxtotal.com.mx/index.php?cont=sed-manipular-texto-basico-1)
+
 ## Notes
 
 This is under active development and is not stable (but is usable) so is probable
 get some breaking changes in the future.
 
+Im currently using Ai to move fast (and see whats the result).
+
 Right now only this features are working :
 
 - [x] CLI request using args config
 - [x] check healt to multiple paths using args config
-- [ ] Env variables from a local file
-- [x] CLI request using local file
+- [x] Env variables from a local file
+- [ ] CLI request using local file
+  - [x] loading body and headers from files
+  - [ ] whole request from file
+  - [ ] whole request from file using envs and subfiles (ej: headers is a file path)
+- [ ] template creation
+  - [ ] request file
+  - [ ] env file
+- [ ] Output formats (human readable by default)
+  - [ ] json (simple and computer frindly)
 - [ ] TUI request
 - [ ] TUI request using envs
 - [ ] TUI request from a file
@@ -39,7 +59,6 @@ just calling directly from your terminal.
 ```shell
 insomnie --help # should display full cli help
 
-
 # check health (like a ping)
 insomnie -u https://pokeapi.co/api/v2/ -chk
 
@@ -50,11 +69,35 @@ insomnie -u https://jsonplaceholder.typicode.com/posts/100
 
 # POST request
 insomnie -u https://jsonplaceholder.typicode.com/posts/ -t post -B "{\"userId\": 22, \"title\":\"my task\" }"
+## using a body json file, just use a filepath (relative or absolute)
+insomnie -u https://jsonplaceholder.typicode.com/posts/ -t post -B ./body.json
+
+######
+# loading env
+
+# just create a subfolder in your current folder named httpclient and inside a env.json file
+
+# ej: ./httpclient/env.json
+# {
+#    "default": {
+#        "url": "https://pokeapi.co/api",
+#        "apiversion": "/v2",
+#        "fullpath": "{{url}}{{apiversion}}"
+#    }
+# }
+# fullpath should be compiled to: https://pokeapi.co/api/v2
+insomnie -u {{fullpath}}
+# custom json file (like a global one)
+insomnie -u {{fullpath}} -evfile ~/envinsomnie.json
+insomnie -u {{fullpath}} -evfile  ./env.json
+
 ```
 
-### Text User Interface
+### Text User Interface (WIP)
 
-WIP
+just call the command avoiding any argument or using -it flag
+
+
 
 ## Project Focuses
 
