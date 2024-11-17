@@ -25,8 +25,7 @@ Right now only this features are working :
 - [x] CLI request using args config
 - [x] check healt to multiple paths using args config
 - [ ] Env variables from a local file
-- [ ] Env variables from a global file
-- [ ] CLI request using local file
+- [x] CLI request using local file
 - [ ] TUI request
 - [ ] TUI request using envs
 - [ ] TUI request from a file

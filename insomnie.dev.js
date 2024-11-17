@@ -488,7 +488,17 @@ function loadJsonInput(input, config) {
   return requestFile;
 }
 
-// index.ts
+// utils/env.ts
+import { existsSync as existsSync2 } from "fs";
+var loadEnv = (fileName, config) => {
+  if (!fileName || !existsSync2(fileName)) {
+    logger("file doesnt exist");
+    logger(fileName);
+    return null;
+  }
+  const envData2 = loadJsonInput(fileName, config);
+  return envData2;
+};
 var getLogLevel = (debuglevel) => {
   switch (debuglevel) {
     case "silent":
@@ -501,11 +511,79 @@ var getLogLevel = (debuglevel) => {
       return 3 /* Debug */;
   }
 };
+function replaceKeysWithJsonValues(jsonData, config) {
+  const keysToReplace = [];
+  const valuesToReplace = [];
+  function findKeys(obj) {
+    for (const key in obj) {
+      if (typeof obj[key] === "string" && obj[key].match(/{{(.*?)}}/)) {
+        keysToReplace.push(key);
+        valuesToReplace.push(obj[key]);
+      } else if (typeof obj[key] === "object") {
+        findKeys(obj[key]);
+      }
+    }
+  }
+  findKeys(jsonData);
+  logger("keysToReplace", 2 /* Verbose */, config.currentLogLevel);
+  logger(JSON.stringify(keysToReplace), 2 /* Verbose */, config.currentLogLevel);
+  logger("valuesToReplace", 2 /* Verbose */, config.currentLogLevel);
+  logger(JSON.stringify(valuesToReplace), 2 /* Verbose */, config.currentLogLevel);
+  function replaceValues(obj) {
+    for (const key in obj) {
+      if (keysToReplace.includes(key)) {
+        const index = keysToReplace.indexOf(key);
+        const value = valuesToReplace[index];
+        const matches = value.match(/{{(.*?)}}/g);
+        if (matches) {
+          let replacedValue = value;
+          for (const match of matches) {
+            const keyToReplace = match.substring(2, match.length - 2);
+            if (obj.hasOwnProperty(keyToReplace)) {
+              replacedValue = replacedValue.replace(match, obj[keyToReplace]);
+            } else {
+              logger(`Key '${keyToReplace}' not found in JSON.`, 2 /* Verbose */, 2 /* Verbose */);
+            }
+          }
+          obj[key] = replacedValue;
+        }
+      } else if (typeof obj[key] === "object") {
+        replaceValues(obj[key]);
+      }
+    }
+  }
+  replaceValues(jsonData);
+  return jsonData;
+}
+function replaceEnv(templateString, data) {
+  const placeholders = templateString.match(/{{(.*?)}}/g);
+  if (!placeholders) {
+    return templateString;
+  }
+  let replacedString = templateString;
+  for (const placeholder of placeholders) {
+    const key = placeholder.substring(2, placeholder.length - 2);
+    if (data.hasOwnProperty(key)) {
+      replacedString = replacedString.replace(placeholder, data[key]);
+    } else {
+      console.warn(`Key '${key}' not found in data object.`);
+    }
+  }
+  return replacedString;
+}
+
+// index.ts
 var cli = getCliProgram(process.argv);
 var cliParams = cli.opts();
 var appConfiguration = {
   currentLogLevel: getLogLevel(cliParams.debuglevel)
 };
+var rawEnvData = loadEnv(cliParams.envfile, appConfiguration);
+logger("rawEnvData", 2 /* Verbose */, appConfiguration.currentLogLevel);
+logger(JSON.stringify(rawEnvData), 2 /* Verbose */, appConfiguration.currentLogLevel);
+var envData = replaceKeysWithJsonValues(rawEnvData, appConfiguration);
+logger("envData", 2 /* Verbose */, appConfiguration.currentLogLevel);
+logger(JSON.stringify(envData), 2 /* Verbose */, appConfiguration.currentLogLevel);
 var checkHealthFlow = cliParams.checkHealth ?? false;
 var cliRequestFlow = process.argv.length > 2;
 if (cliParams.type === "gql") {
@@ -530,11 +608,11 @@ try {
 }
 var requestBody = null;
 if (cliParams.body !== void 0) {
-  requestBody = JSON.parse(cliParams.body);
+  requestBody = loadJsonInput(cliParams.body, appConfiguration);
 }
 if (cliRequestFlow && !checkHealthFlow) {
   const requestData = {
-    url: cliParams.url,
+    url: envData && envData["default"] ? replaceEnv(cliParams.url, envData["default"]) : cliParams.url,
     type: cliParams.type,
     headers: requestHeaders,
     body: requestBody

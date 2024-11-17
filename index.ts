@@ -11,26 +11,27 @@ import { generateFullUrls, parseHeaders } from './utils/requests';
 import { EDebugLevel, IAppConfiguration, ICliOptions } from './types';
 import { loadJsonInput } from './utils/fileread';
 import { logger } from './utils/logger';
+import { getLogLevel, loadEnv, replaceKeysWithJsonValues, replaceEnv} from './utils/env';
 
-const getLogLevel = (debuglevel:string) => {
-  switch (debuglevel) {
-    case 'silent':
-      return EDebugLevel.Silent;
-    case 'info':
-      return EDebugLevel.Info;
-    case 'verbose':
-      return EDebugLevel.Verbose;
-    case 'debug':
-      return EDebugLevel.Debug;
-  }
-};
 
 const cli = getCliProgram(process.argv);
-const cliParams:ICliOptions = cli.opts()
+const cliParams:ICliOptions = cli.opts();
 const appConfiguration:IAppConfiguration = {
   currentLogLevel: getLogLevel(cliParams.debuglevel)
 }
 
+// raw could include calculated sub values
+const rawEnvData = loadEnv(cliParams.envfile, appConfiguration);
+
+logger('rawEnvData', EDebugLevel.Verbose, appConfiguration.currentLogLevel)
+logger(JSON.stringify(rawEnvData), EDebugLevel.Verbose, appConfiguration.currentLogLevel)
+
+const envData = replaceKeysWithJsonValues(rawEnvData, appConfiguration);
+
+logger('envData', EDebugLevel.Verbose, appConfiguration.currentLogLevel)
+logger(JSON.stringify(envData), EDebugLevel.Verbose, appConfiguration.currentLogLevel)
+
+// process.exit(1)
 const checkHealthFlow: boolean = cliParams.checkHealth ?? false;
 // Comprueba si no se proporcionaron parámetros 2 because 0 => node, 1 => scriptname (insomnie.js)
 const cliRequestFlow: boolean = process.argv.length > 2;
@@ -49,14 +50,14 @@ if (checkHealthFlow) {
   process.exit(0);
 }
 
-// TODO: using json by default but i need support another types
+// TODO: using json by default but is cool support another types -> not high priority
 let requestHeaders = {
   'content-type': 'application/json'
 }
 
 try {
   // const headersFromCli = JSON.parse(cliParams.headers)
-  const headersFromCli = loadJsonInput(cliParams.headers, appConfiguration)
+  const headersFromCli = loadJsonInput(cliParams.headers, appConfiguration);
   requestHeaders = { ...requestHeaders, ...headersFromCli }
   
   logger('parsed headers.', EDebugLevel.Verbose, appConfiguration.currentLogLevel)
@@ -67,15 +68,14 @@ try {
 
 let requestBody = null;
 if (cliParams.body !== undefined) {
-  requestBody = JSON.parse(cliParams.body);
+  requestBody = loadJsonInput(cliParams.body, appConfiguration);
 }
 
 // 2: cli request
 if (cliRequestFlow && !checkHealthFlow) {
   // Procesa los parámetros de URL y cabeceras
   const requestData = {
-    url: cliParams.url,
-
+    url: envData && envData['default'] ? replaceEnv(cliParams.url, envData['default']):cliParams.url,
     type: cliParams.type,
     headers: requestHeaders,
     body: requestBody,
