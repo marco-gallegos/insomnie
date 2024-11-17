@@ -1,6 +1,6 @@
 # Insomnie
 
-Insomnie is a lightweight CLI and TUI HTTP client for developers. Inspired by big projects like Postman, Insomnia, Bruno, Cartero, curl and httpie, but with a minimalist text-based interface. Test and debug APIs quickly with an intuitive and customizable tool.
+Insomnie is a lightweight CLI and TUI HTTP (mainly REST/json) client for developers. Inspired by big projects like Postman, Insomnia, Bruno, Cartero, curl and httpie, but with a minimalist text-based interface. Test and debug APIs quickly with an intuitive and customizable tool.
 
 Insomnie is the french translation of insomnio (from the spanish) and is a kind of joke about the rest translation to the spanish (descansar).
 
